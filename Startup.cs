@@ -36,7 +36,8 @@ namespace currentweather
                                   {
                                       builder.WithOrigins(
                                           "http://hrdlicky.eu"
-//                                          ,"http://hrdlicky.aspifyhost.com"
+                                          ,"http://localhost:53771"
+                                          //                                          ,"http://hrdlicky.aspifyhost.com"
                                           )
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
