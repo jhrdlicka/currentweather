@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace currentweather.Controllers
 {
+//    [AllowAnonymous]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
