@@ -12,6 +12,7 @@ namespace currentweather.Models
 
     public class CurrentWeatherContext: IdentityDbContext <AppUser>
     {
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -22,9 +23,8 @@ namespace currentweather.Models
             // For Guid Primary Key
             builder.Entity<AppUser>().Property(p => p.Id).ValueGeneratedOnAdd();
 
-            // For int Primary Key
-//            builder.Entity<AppUser>().Property(p => p.Id).UseSqlServerIdentityColumn();
         }
+        
 
         public CurrentWeatherContext(DbContextOptions<CurrentWeatherContext> Options) : base(Options)
         {

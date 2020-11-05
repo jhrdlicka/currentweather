@@ -27,32 +27,6 @@ namespace currentweather
 
     public class Startup
     {
-        //// ******** test1 ***********
-        //private readonly Lazy<string> _projectId = new Lazy<string>(() => GetProjectId());
-
-        //public string ProjectId
-        //{
-        //    get { return _projectId.Value; }
-        //}
-
-        //private static string GetProjectId()
-        //{
-        //    GoogleCredential googleCredential = Google.Apis.Auth.OAuth2
-        //        .GoogleCredential.GetApplicationDefault();
-        //    if (googleCredential != null)
-        //    {
-        //        ICredential credential = googleCredential.UnderlyingCredential;
-        //        ServiceAccountCredential serviceAccountCredential =
-        //            credential as ServiceAccountCredential;
-        //        if (serviceAccountCredential != null)
-        //        {
-        //            return serviceAccountCredential.ProjectId;
-        //        }
-        //    }
-        //    return Google.Api.Gax.Platform.Instance().ProjectId;
-        //}
-        //// ******** end: test1 ***********
-
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public Startup(IConfiguration configuration)

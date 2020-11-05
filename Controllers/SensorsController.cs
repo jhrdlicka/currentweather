@@ -87,7 +87,6 @@ namespace currentweather.Controllers
             _context.Sensor.Add(sensor);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetSensor", new { id = sensor.Id }, sensor);
             return CreatedAtAction(nameof(GetSensor), new { id = sensor.Id }, sensor);
         }
 
