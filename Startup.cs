@@ -19,38 +19,39 @@ using Microsoft.AspNetCore.Http;
 using Google.Cloud.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace currentweather
 {
 
-    
+
     public class Startup
     {
-        // ******** test1 ***********
-        private readonly Lazy<string> _projectId = new Lazy<string>(() => GetProjectId());
+        //// ******** test1 ***********
+        //private readonly Lazy<string> _projectId = new Lazy<string>(() => GetProjectId());
 
-        public string ProjectId
-        {
-            get { return _projectId.Value; }
-        }
+        //public string ProjectId
+        //{
+        //    get { return _projectId.Value; }
+        //}
 
-        private static string GetProjectId()
-        {
-            GoogleCredential googleCredential = Google.Apis.Auth.OAuth2
-                .GoogleCredential.GetApplicationDefault();
-            if (googleCredential != null)
-            {
-                ICredential credential = googleCredential.UnderlyingCredential;
-                ServiceAccountCredential serviceAccountCredential =
-                    credential as ServiceAccountCredential;
-                if (serviceAccountCredential != null)
-                {
-                    return serviceAccountCredential.ProjectId;
-                }
-            }
-            return Google.Api.Gax.Platform.Instance().ProjectId;
-        }
-        // ******** end: test1 ***********
+        //private static string GetProjectId()
+        //{
+        //    GoogleCredential googleCredential = Google.Apis.Auth.OAuth2
+        //        .GoogleCredential.GetApplicationDefault();
+        //    if (googleCredential != null)
+        //    {
+        //        ICredential credential = googleCredential.UnderlyingCredential;
+        //        ServiceAccountCredential serviceAccountCredential =
+        //            credential as ServiceAccountCredential;
+        //        if (serviceAccountCredential != null)
+        //        {
+        //            return serviceAccountCredential.ProjectId;
+        //        }
+        //    }
+        //    return Google.Api.Gax.Platform.Instance().ProjectId;
+        //}
+        //// ******** end: test1 ***********
 
         readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -72,10 +73,11 @@ namespace currentweather
                                   {
                                       builder.WithOrigins(
                                           "http://hrdlicky.eu"
-                                          ,"http://localhost:53771"
+                                          , "http://localhost:53771"
                                           //                                          ,"http://hrdlicky.aspifyhost.com"
                                           )
                                       .AllowAnyHeader()
+                                      .AllowCredentials()
                                       .AllowAnyMethod();
                                   });
             });
@@ -86,46 +88,56 @@ namespace currentweather
             //  services.AddDbContext<CurrentWeatherContext>(opt =>
             //   opt.UseInMemoryDatabase("CurrentWeather"));
 
-            services.AddDefaultIdentity<IdentityUser>(
-                options => options.SignIn.RequireConfirmedAccount = true)
-//                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<CurrentWeatherContext>();
+            //services.AddDefaultIdentity<IdentityUser>(
+            //    options => options.SignIn.RequireConfirmedAccount = true)
+            //    //                .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<CurrentWeatherContext>();
 
             services.AddControllers();
 
-            services.AddAuthentication()
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(options =>
+                {
+                    //If you're using Chrome against localhost, you may have run into a change in Chrome cookie-handling behaviour.
+                    //To verify, navigate to chrome://flags/ and change "Cookies without SameSite must be secure" to "Disabled".
+
+                    options.LoginPath = "/account/google-login"; // Must be lowercase
+                    options.SlidingExpiration = true;
+                })
                 .AddGoogle(options =>
                 {
-                    IConfigurationSection googleAuthNSection =
-                        Configuration.GetSection("Authentication:Google");
-                        options.ClientId = googleAuthNSection["ClientId"];
-                        options.ClientSecret = googleAuthNSection["ClientSecret"];
-                    options.ClaimActions.Clear();
-                    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
-                    options.ClaimActions.MapJsonKey(ClaimTypes.GivenName, "given_name");
-                    options.ClaimActions.MapJsonKey(ClaimTypes.Surname, "family_name");
-                    options.ClaimActions.MapJsonKey("urn:google:picture", "picture", "url");
-                    options.ClaimActions.MapJsonKey("urn:google:profile", "link");
-                    options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
-                });
+                    IConfigurationSection googleAuthNSection = Configuration.GetSection("Google");
+                    options.ClientId = googleAuthNSection["ClientId"];
+                    options.ClientSecret = googleAuthNSection["ClientSecret"];
 
-            services.AddAuthorization(options =>
+               });
+
+            services.Configure<CookiePolicyOptions>(options =>
             {
-                options.AddPolicy("AllowedUsersOnly", policy =>
-                {
-                    policy.RequireAssertion(context =>
-                    {
-                        //Here you can get many resouces from context, i get a claim here for example
-                        var name = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-
-                        //write your logic to check user name .
-
-
-                        return false;
-                    });
-                });
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("AllowedUsersOnly", policy =>
+            //    {
+            //        policy.RequireAssertion(context =>
+            //        {
+            //            //Here you can get many resouces from context, i get a claim here for example
+            //            var name = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+
+            //            //write your logic to check user name .
+
+
+            //            return false;
+            //        });
+            //    });
+            //});
         }
 
 
@@ -144,6 +156,7 @@ namespace currentweather
 
             app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
