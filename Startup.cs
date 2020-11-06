@@ -96,22 +96,27 @@ namespace currentweather
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("AllowedUsersOnly", policy =>
-            //    {
-            //        policy.RequireAssertion(context =>
-            //        {
-            //            //Here you can get many resouces from context, i get a claim here for example
-            //            var name = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AllowedUsersOnly", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    {
+                        //Here you can get many resouces from context, i get a claim here for example
+                        var name = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
 
-            //            //write your logic to check user name .
+                        //write your logic to check user name .
+                        var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
 
+                        if (email == "hrdlicka.jan@gmail.com")
+                            return true;
+                        if (email == "bhrdlickova@gmail.com")
+                            return true;
 
-            //            return false;
-            //        });
-            //    });
-            //});
+                        return false;
+                    });
+                });
+            });
         }
 
 

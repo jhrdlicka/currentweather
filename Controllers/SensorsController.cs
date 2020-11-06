@@ -91,6 +91,7 @@ namespace currentweather.Controllers
         }
 
         // DELETE: api/Sensors/5
+        [Authorize(Policy = "AllowedUsersOnly")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Sensor>> DeleteSensor(long id)
         {
