@@ -25,6 +25,12 @@ namespace currentweather.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+        [Route("AccessDenied")]
+        public IActionResult accessdenied()
+        {
+            return Unauthorized();
+        }
+
         [Route("google-response")]
         public async Task<IActionResult> GoogleResponse()
         {
