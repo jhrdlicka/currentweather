@@ -55,7 +55,7 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.CustomerId)
                     .HasName("IX_Relationship2");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CanceledReason).HasColumnName("Canceled_reason");
 
@@ -114,7 +114,7 @@ namespace currentweather.Models
             {
                 entity.ToTable("PCM_Customer_TB");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Active)
                     .IsRequired()
@@ -154,7 +154,7 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.OrderId)
                     .HasName("IX_Relationship11");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CanceledReason).HasColumnName("Canceled_reason");
 
@@ -211,7 +211,7 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.OrderId)
                     .HasName("IX_Relationship9");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+ //               entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CaleventId).HasColumnName("Calevent_Id");
 
@@ -242,7 +242,7 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.CustomerId)
                     .HasName("IX_Relationship8");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CurrencyNm)
                     .HasColumnName("Currency_NM")

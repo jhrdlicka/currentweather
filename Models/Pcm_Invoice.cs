@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
@@ -9,7 +11,8 @@ namespace currentweather.Models
         {
             Payments = new HashSet<Pcm_Payment>();
         }
-
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
         public long OrderId { get; set; }
         public string InvoiceNr { get; set; }

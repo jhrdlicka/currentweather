@@ -34,7 +34,7 @@ namespace currentweather.Controllers
 
         // GET: api/Pcm_Payment/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_Payment>> GetPcm_Payment(string id)
+        public async Task<ActionResult<Pcm_Payment>> GetPcm_Payment(long id)
         {
             var pcm_Payment = await _context.PcmPaymentTb.FindAsync(id);
 
@@ -50,7 +50,7 @@ namespace currentweather.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_Payment(string id, Pcm_Payment pcm_Payment)
+        public async Task<IActionResult> PutPcm_Payment(long id, Pcm_Payment pcm_Payment)
         {
             if (id != pcm_Payment.Id)
             {
@@ -106,7 +106,7 @@ namespace currentweather.Controllers
 
         // DELETE: api/Pcm_Payment/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_Payment>> DeletePcm_Payment(string id)
+        public async Task<ActionResult<Pcm_Payment>> DeletePcm_Payment(long id)
         {
             var pcm_Payment = await _context.PcmPaymentTb.FindAsync(id);
             if (pcm_Payment == null)
@@ -120,7 +120,7 @@ namespace currentweather.Controllers
             return pcm_Payment;
         }
 
-        private bool Pcm_PaymentExists(string id)
+        private bool Pcm_PaymentExists(long id)
         {
             return _context.PcmPaymentTb.Any(e => e.Id == id);
         }

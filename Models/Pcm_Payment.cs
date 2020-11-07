@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
     public partial class Pcm_Payment
     {
-        public string Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long Id { get; set; }
         public long? InvoiceId { get; set; }
         public decimal Amount { get; set; }
         public string CurrencyNm { get; set; }
