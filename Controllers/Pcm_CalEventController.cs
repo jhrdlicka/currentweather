@@ -12,52 +12,53 @@ using Microsoft.AspNetCore.Authorization;
 namespace currentweather.Controllers
 {
     [AllowAnonymous]
-    //    [Authorize(Policy = "AllowedUsersOnly")]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class Pcm_CalEventController : ControllerBase
+    public class pcm_caleventController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public Pcm_CalEventController(CurrentWeatherContext context)
+        public pcm_caleventController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pcm_CalEvent
+        // GET: api/pcm_calevent
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pcm_CalEvent>>> GetPcmCalEventTb()
+        public async Task<ActionResult<IEnumerable<pcm_calevent>>> Getpcm_calevent()
         {
-            return await _context.PcmCalEventTb.ToListAsync();
+            return await _context.pcm_calevent.ToListAsync();
         }
 
-        // GET: api/Pcm_CalEvent/5
+        // GET: api/pcm_calevent/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_CalEvent>> GetPcm_CalEvent(long id)
+        public async Task<ActionResult<pcm_calevent>> Getpcm_calevent(long id)
         {
-            var pcm_CalEvent = await _context.PcmCalEventTb.FindAsync(id);
+            var pcm_calevent = await _context.pcm_calevent.FindAsync(id);
 
-            if (pcm_CalEvent == null)
+            if (pcm_calevent == null)
             {
                 return NotFound();
             }
 
-            return pcm_CalEvent;
+            return pcm_calevent;
         }
 
-        // PUT: api/Pcm_CalEvent/5
+        // PUT: api/pcm_calevent/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_CalEvent(long id, Pcm_CalEvent pcm_CalEvent)
+        public async Task<IActionResult> Putpcm_calevent(long id, pcm_calevent pcm_calevent)
         {
-            if (id != pcm_CalEvent.Id)
+            if (id != pcm_calevent.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_CalEvent).State = EntityState.Modified;
+            _context.Entry(pcm_calevent).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Pcm_CalEventExists(id))
+                if (!pcm_caleventExists(id))
                 {
                     return NotFound();
                 }
@@ -78,51 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/Pcm_CalEvent
+        // POST: api/pcm_calevent
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pcm_CalEvent>> PostPcm_CalEvent(Pcm_CalEvent pcm_CalEvent)
+        public async Task<ActionResult<pcm_calevent>> Postpcm_calevent(pcm_calevent pcm_calevent)
         {
-            _context.PcmCalEventTb.Add(pcm_CalEvent);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (Pcm_CalEventExists(pcm_CalEvent.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.pcm_calevent.Add(pcm_calevent);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPcm_CalEvent", new { id = pcm_CalEvent.Id }, pcm_CalEvent);
+            return CreatedAtAction("Getpcm_calevent", new { id = pcm_calevent.id }, pcm_calevent);
         }
 
-        // DELETE: api/Pcm_CalEvent/5
+        // DELETE: api/pcm_calevent/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_CalEvent>> DeletePcm_CalEvent(long id)
+        public async Task<ActionResult<pcm_calevent>> Deletepcm_calevent(long id)
         {
-            var pcm_CalEvent = await _context.PcmCalEventTb.FindAsync(id);
-            if (pcm_CalEvent == null)
+            var pcm_calevent = await _context.pcm_calevent.FindAsync(id);
+            if (pcm_calevent == null)
             {
                 return NotFound();
             }
 
-            _context.PcmCalEventTb.Remove(pcm_CalEvent);
+            _context.pcm_calevent.Remove(pcm_calevent);
             await _context.SaveChangesAsync();
 
-            return pcm_CalEvent;
+            return pcm_calevent;
         }
 
-        private bool Pcm_CalEventExists(long id)
+        private bool pcm_caleventExists(long id)
         {
-            return _context.PcmCalEventTb.Any(e => e.Id == id);
+            return _context.pcm_calevent.Any(e => e.id == id);
         }
     }
 }

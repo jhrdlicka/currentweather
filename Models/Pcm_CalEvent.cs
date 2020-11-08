@@ -1,42 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
-    public partial class Pcm_CalEvent
+    public partial class pcm_calevent
     {
-        public Pcm_CalEvent()
+        public pcm_calevent()
         {
-            OrderSessions = new HashSet<Pcm_OrderSession>();
+            pcm_ordersession = new HashSet<pcm_ordersession>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public DateTime? Start { get; set; }
-        public TimeSpan? Duration { get; set; }
-        public string Title { get; set; }
-        public long? CustomerId { get; set; }
-        public string GcalId { get; set; }
-        public string GcalStatus { get; set; }
-        public string GcalHtmllink { get; set; }
-        public DateTime? GcalCreated { get; set; }
-        public DateTime? GcalUpdated { get; set; }
-        public string GcalSummary { get; set; }
-        public string GcalDescription { get; set; }
-        public string GcalLocation { get; set; }
-        public DateTime? GcalStart { get; set; }
-        public DateTime? GcalEnd { get; set; }
-        public string GcalJson { get; set; }
-        public string XOrdered { get; set; }
-        public string Invoicetext { get; set; }
-        public decimal? Price { get; set; }
-        public string CurrencyNm { get; set; }
-        public DateTime? Canceled { get; set; }
-        public string CanceledReason { get; set; }
 
-        public virtual Pcm_Customer Customer { get; set; }
-        public virtual ICollection<Pcm_OrderSession> OrderSessions { get; set; }
+        public long id { get; set; }
+        public DateTime? start { get; set; }
+        public TimeSpan? duration { get; set; }
+        public string title { get; set; }
+        public long? customerid { get; set; }
+        public string gcalid { get; set; }
+        public string gcalstatus { get; set; }
+        public string gcallink { get; set; }
+        public DateTime? gcalcreated { get; set; }
+        public DateTime? gcalupdated { get; set; }
+        public string gcalsummary { get; set; }
+        public string gcaldescription { get; set; }
+        public string gcallocation { get; set; }
+        public DateTime? gcalstart { get; set; }
+        public DateTime? gcalend { get; set; }
+        public string gcaljson { get; set; }
+        public string xordered { get; set; }
+        public string invoicetext { get; set; }
+        public decimal? price { get; set; }
+        public string currencynm { get; set; }
+        public DateTime? canceled { get; set; }
+        public string canceledreason { get; set; }
+
+        public virtual pcm_customer customer { get; set; }
+        public virtual ICollection<pcm_ordersession> pcm_ordersession { get; set; }
     }
 }

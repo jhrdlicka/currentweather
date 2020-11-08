@@ -12,52 +12,53 @@ using Microsoft.AspNetCore.Authorization;
 namespace currentweather.Controllers
 {
     [AllowAnonymous]
-    //    [Authorize(Policy = "AllowedUsersOnly")]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class Pcm_InvoiceController : ControllerBase
+    public class pcm_invoiceController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public Pcm_InvoiceController(CurrentWeatherContext context)
+        public pcm_invoiceController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pcm_Invoice
+        // GET: api/pcm_invoice
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pcm_Invoice>>> GetPcmInvoiceTb()
+        public async Task<ActionResult<IEnumerable<pcm_invoice>>> Getpcm_invoice()
         {
-            return await _context.PcmInvoiceTb.ToListAsync();
+            return await _context.pcm_invoice.ToListAsync();
         }
 
-        // GET: api/Pcm_Invoice/5
+        // GET: api/pcm_invoice/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_Invoice>> GetPcm_Invoice(long id)
+        public async Task<ActionResult<pcm_invoice>> Getpcm_invoice(long id)
         {
-            var pcm_Invoice = await _context.PcmInvoiceTb.FindAsync(id);
+            var pcm_invoice = await _context.pcm_invoice.FindAsync(id);
 
-            if (pcm_Invoice == null)
+            if (pcm_invoice == null)
             {
                 return NotFound();
             }
 
-            return pcm_Invoice;
+            return pcm_invoice;
         }
 
-        // PUT: api/Pcm_Invoice/5
+        // PUT: api/pcm_invoice/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_Invoice(long id, Pcm_Invoice pcm_Invoice)
+        public async Task<IActionResult> Putpcm_invoice(long id, pcm_invoice pcm_invoice)
         {
-            if (id != pcm_Invoice.Id)
+            if (id != pcm_invoice.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_Invoice).State = EntityState.Modified;
+            _context.Entry(pcm_invoice).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Pcm_InvoiceExists(id))
+                if (!pcm_invoiceExists(id))
                 {
                     return NotFound();
                 }
@@ -78,51 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/Pcm_Invoice
+        // POST: api/pcm_invoice
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pcm_Invoice>> PostPcm_Invoice(Pcm_Invoice pcm_Invoice)
+        public async Task<ActionResult<pcm_invoice>> Postpcm_invoice(pcm_invoice pcm_invoice)
         {
-            _context.PcmInvoiceTb.Add(pcm_Invoice);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (Pcm_InvoiceExists(pcm_Invoice.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.pcm_invoice.Add(pcm_invoice);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPcm_Invoice", new { id = pcm_Invoice.Id }, pcm_Invoice);
+            return CreatedAtAction("Getpcm_invoice", new { id = pcm_invoice.id }, pcm_invoice);
         }
 
-        // DELETE: api/Pcm_Invoice/5
+        // DELETE: api/pcm_invoice/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_Invoice>> DeletePcm_Invoice(long id)
+        public async Task<ActionResult<pcm_invoice>> Deletepcm_invoice(long id)
         {
-            var pcm_Invoice = await _context.PcmInvoiceTb.FindAsync(id);
-            if (pcm_Invoice == null)
+            var pcm_invoice = await _context.pcm_invoice.FindAsync(id);
+            if (pcm_invoice == null)
             {
                 return NotFound();
             }
 
-            _context.PcmInvoiceTb.Remove(pcm_Invoice);
+            _context.pcm_invoice.Remove(pcm_invoice);
             await _context.SaveChangesAsync();
 
-            return pcm_Invoice;
+            return pcm_invoice;
         }
 
-        private bool Pcm_InvoiceExists(long id)
+        private bool pcm_invoiceExists(long id)
         {
-            return _context.PcmInvoiceTb.Any(e => e.Id == id);
+            return _context.pcm_invoice.Any(e => e.id == id);
         }
     }
 }

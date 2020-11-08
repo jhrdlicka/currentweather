@@ -1,34 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
-    public partial class Pcm_Customer
+    public partial class pcm_customer
     {
-        public Pcm_Customer()
+        public pcm_customer()
         {
-            CalEvents = new HashSet<Pcm_CalEvent>();
-            Orders = new HashSet<Pcm_Order>();
+            pcm_calevent = new HashSet<pcm_calevent>();
+            pcm_order = new HashSet<pcm_order>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public string Firstname { get; set; }
-        public string Surname { get; set; }
-        public string EMailCalendar { get; set; }
-        public string EMailInvoice { get; set; }
-        public string Phone { get; set; }
-        public byte[] Photo { get; set; }
-        public bool? Active { get; set; }
-        public decimal? PriceSession { get; set; }
-        public decimal? Price10sessions { get; set; }
-        public string CurrencyNm { get; set; }
-        public string AgreedConditions { get; set; }
-        public string Note { get; set; }
+        public long id { get; set; }
+        public string firstname { get; set; }
+        public string surname { get; set; }
+        public string emailcalendar { get; set; }
+        public string emailinvoice { get; set; }
+        public string phone { get; set; }
+        public byte[] photo { get; set; }
+        public bool? active { get; set; }
+        public decimal? pricesession { get; set; }
+        public decimal? price10sessions { get; set; }
+        public string currencynm { get; set; }
+        public string agreedconditions { get; set; }
+        public string note { get; set; }
 
-        public virtual ICollection<Pcm_CalEvent> CalEvents { get; set; }
-        public virtual ICollection<Pcm_Order> Orders { get; set; }
+        public virtual ICollection<pcm_calevent> pcm_calevent { get; set; }
+        public virtual ICollection<pcm_order> pcm_order { get; set; }
     }
 }

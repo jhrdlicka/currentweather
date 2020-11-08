@@ -48,259 +48,173 @@ namespace currentweather.Models
             // For Guid Primary Key
             modelBuilder.Entity<AppUser>().Property(p => p.Id).ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Pcm_CalEvent>(entity =>
+
+            
+            modelBuilder.Entity<pcm_calevent>(entity =>
             {
-                entity.ToTable("PCM_CalEvent_TB");
+                entity.HasIndex(e => e.customerid)
+                    .HasName("ix_relationship2");
 
-                entity.HasIndex(e => e.CustomerId)
-                    .HasName("IX_Relationship2");
+                entity.Property(e => e.currencynm).IsUnicode(false);
 
-//                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.gcalid).IsUnicode(false);
 
-                entity.Property(e => e.CanceledReason).HasColumnName("Canceled_reason");
+                entity.Property(e => e.gcallink).IsUnicode(false);
 
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_NM")
-                    .IsUnicode(false);
+                entity.Property(e => e.gcalstatus).IsUnicode(false);
 
-                entity.Property(e => e.CustomerId).HasColumnName("Customer_Id");
+                entity.Property(e => e.price).HasColumnType("money");
 
-                entity.Property(e => e.GcalCreated).HasColumnName("GCal_Created");
-
-                entity.Property(e => e.GcalDescription).HasColumnName("GCal_Description");
-
-                entity.Property(e => e.GcalEnd).HasColumnName("GCal_End");
-
-                entity.Property(e => e.GcalHtmllink)
-                    .HasColumnName("GCal_HTMLlink")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GcalId)
-                    .HasColumnName("GCal_Id")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GcalJson).HasColumnName("GCal_JSON");
-
-                entity.Property(e => e.GcalLocation).HasColumnName("GCal_Location");
-
-                entity.Property(e => e.GcalStart).HasColumnName("GCal_Start");
-
-                entity.Property(e => e.GcalStatus)
-                    .HasColumnName("GCal_Status")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.GcalSummary).HasColumnName("GCal_Summary");
-
-                entity.Property(e => e.GcalUpdated).HasColumnName("GCal_Updated");
-
-                entity.Property(e => e.Price).HasColumnType("money");
-
-                entity.Property(e => e.XOrdered)
+                entity.Property(e => e.xordered)
                     .IsRequired()
-                    .HasColumnName("x_Ordered")
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength()
                     .HasComment("There exists an OrderSession for this CalEvent (the event/session is covered by any order)");
 
-                entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.CalEvents)
-                    .HasForeignKey(d => d.CustomerId)
+                entity.HasOne(d => d.customer)
+                    .WithMany(p => p.pcm_calevent)
+                    .HasForeignKey(d => d.customerid)
                     .OnDelete(DeleteBehavior.SetNull)
-                    .HasConstraintName("PCM_CustomerEvent_FK");
+                    .HasConstraintName("pcm_customerevent_fk");
             });
 
-            modelBuilder.Entity<Pcm_Customer>(entity =>
+            modelBuilder.Entity<pcm_customer>(entity =>
             {
-                entity.ToTable("PCM_Customer_TB");
-
-//                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Active)
+                entity.Property(e => e.active)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_nm")
-                    .IsUnicode(false);
+                entity.Property(e => e.currencynm)
+                    .IsUnicode(false)
+                    .HasComment("currency - link to a CURRENCY reference table");
 
-                entity.Property(e => e.EMailCalendar)
-                    .HasColumnName("eMail_calendar")
-                    .IsUnicode(false);
+                entity.Property(e => e.emailcalendar)
+                    .IsUnicode(false)
+                    .HasComment("Customer email for communication and invitations");
 
-                entity.Property(e => e.EMailInvoice)
-                    .HasColumnName("eMail_invoice")
-                    .IsUnicode(false);
+                entity.Property(e => e.emailinvoice).IsUnicode(false);
 
-                entity.Property(e => e.Phone).IsUnicode(false);
+                entity.Property(e => e.phone).IsUnicode(false);
 
-                entity.Property(e => e.Photo).HasColumnType("image");
+                entity.Property(e => e.photo).HasColumnType("image");
 
-                entity.Property(e => e.Price10sessions)
-                    .HasColumnName("Price_10sessions")
-                    .HasColumnType("money");
+                entity.Property(e => e.price10sessions)
+                    .HasColumnType("money")
+                    .HasComment("agreed discounted price for 10 sessions");
 
-                entity.Property(e => e.PriceSession)
-                    .HasColumnName("Price_session")
-                    .HasColumnType("money");
+                entity.Property(e => e.pricesession)
+                    .HasColumnType("money")
+                    .HasComment("Agreed price per session");
 
-                entity.Property(e => e.Surname).IsRequired();
+                entity.Property(e => e.surname).IsRequired();
             });
 
-            modelBuilder.Entity<Pcm_Invoice>(entity =>
+            modelBuilder.Entity<pcm_invoice>(entity =>
             {
-                entity.ToTable("PCM_Invoice_TB");
+                entity.HasIndex(e => e.orderid)
+                    .HasName("ix_relationship11");
 
-                entity.HasIndex(e => e.OrderId)
-                    .HasName("IX_Relationship11");
+                entity.Property(e => e.currencynm).IsUnicode(false);
 
-//                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CanceledReason).HasColumnName("Canceled_reason");
-
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_nm")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.EMail)
-                    .HasColumnName("eMail")
+                entity.Property(e => e.email)
                     .IsUnicode(false)
                     .HasComment("e-mail address where the invoice was sent");
 
-                entity.Property(e => e.EventDate).HasComment("Chargeable event date (datum zdanitelneho plneni)");
+                entity.Property(e => e.eventdate).HasComment("Chargeable event date (datum zdanitelneho plneni)");
 
-                entity.Property(e => e.InvoiceNr)
-                    .HasColumnName("InvoiceNR")
-                    .IsUnicode(false);
+                entity.Property(e => e.invoicenr).IsUnicode(false);
 
-                entity.Property(e => e.OrderId).HasColumnName("Order_id");
-
-                entity.Property(e => e.PostAddr)
-                    .IsUnicode(false)
-                    .HasComment("Post address where the invoice was sent");
-
-                entity.Property(e => e.Price).HasColumnType("money");
-
-                entity.Property(e => e.Scan)
-                    .HasColumnType("image")
-                    .HasComment("Scanned version of the invoice");
-
-                entity.Property(e => e.Sent).HasComment("The invoice was sent to the customer");
-
-                entity.Property(e => e.Sourcefile).HasComment("Source file with the invoice");
-
-                entity.Property(e => e.Url)
-                    .HasColumnName("URL")
+                entity.Property(e => e.link)
                     .IsUnicode(false)
                     .HasComment("Link to a document with the invoice");
 
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.Invoices)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("PCM_OrderInvoice_TB");
+                entity.Property(e => e.postaddr)
+                    .IsUnicode(false)
+                    .HasComment("Post address where the invoice was sent");
+
+                entity.Property(e => e.price).HasColumnType("money");
+
+                entity.Property(e => e.scan)
+                    .HasColumnType("image")
+                    .HasComment("Scanned version of the invoice");
+
+                entity.Property(e => e.sent).HasComment("The invoice was sent to the customer");
+
+                entity.Property(e => e.sourcefile).HasComment("Source file with the invoice");
+
+                entity.HasOne(d => d.order)
+                    .WithMany(p => p.pcm_invoice)
+                    .HasForeignKey(d => d.orderid)
+                    .HasConstraintName("pcm_orderinvoice_tb");
             });
 
-            modelBuilder.Entity<Pcm_OrderSession>(entity =>
+            modelBuilder.Entity<pcm_order>(entity =>
             {
-                entity.ToTable("PCM_OrderSession_TB");
+                entity.HasIndex(e => e.customerid)
+                    .HasName("ix_relationship8");
 
-                entity.HasIndex(e => e.CaleventId)
-                    .HasName("IX_Relationship10");
+                entity.Property(e => e.currencynm).IsUnicode(false);
 
-                entity.HasIndex(e => e.OrderId)
-                    .HasName("IX_Relationship9");
-
- //               entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CaleventId).HasColumnName("Calevent_Id");
-
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_NM")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.OrderId).HasColumnName("Order_id");
-
-                entity.Property(e => e.Price).HasColumnType("money");
-
-                entity.HasOne(d => d.Calevent)
-                                    .WithMany(p => p.OrderSessions)
-                                    .HasForeignKey(d => d.CaleventId)
-                                    .HasConstraintName("PCM_CaleventSession_FK");                
-
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderSessions)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("PCM_OderSession_FK");
-            });
-
-            modelBuilder.Entity<Pcm_Order>(entity =>
-            {
-                entity.ToTable("PCM_Order_TB");
-
-                entity.HasIndex(e => e.CustomerId)
-                    .HasName("IX_Relationship8");
-
-//                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_NM")
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CustomerId).HasColumnName("Customer_Id");
-
-                entity.Property(e => e.Price)
+                entity.Property(e => e.price)
                     .HasColumnType("money")
                     .HasComment("Agreed price of the order");
 
-                entity.Property(e => e.XFullyScheduled)
-                    .HasColumnName("x_FullyScheduled")
-                    .HasComment("All OrderSessions are linked to non-deleted CalEvents");
+                entity.Property(e => e.xfullyscheduled).HasComment("All OrderSessions are linked to non-deleted CalEvents");
 
-                entity.Property(e => e.XInvoiced)
-                    .HasColumnName("x_Invoiced")
-                    .HasComment("The invoice for for the order was sent");
+                entity.Property(e => e.xinvoiced).HasComment("The invoice for for the order was sent");
 
-                entity.HasOne(d => d.Customer)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.CustomerId)
-                    .HasConstraintName("PCM_CustomerOrder_FK");
+                entity.HasOne(d => d.customer)
+                    .WithMany(p => p.pcm_order)
+                    .HasForeignKey(d => d.customerid)
+                    .HasConstraintName("pcm_customerorder_fk");
             });
 
-            modelBuilder.Entity<Pcm_Payment>(entity =>
+            modelBuilder.Entity<pcm_ordersession>(entity =>
             {
-                entity.ToTable("PCM_Payment_TB");
+                entity.HasIndex(e => e.caleventid)
+                    .HasName("ix_relationship10");
 
-                entity.HasIndex(e => e.InvoiceId)
-                    .HasName("IX_Relationship12");
+                entity.HasIndex(e => e.orderid)
+                    .HasName("ix_relationship9");
 
-                entity.Property(e => e.Id)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength();
+                entity.Property(e => e.currencynm).IsUnicode(false);
 
-                entity.Property(e => e.Amount).HasColumnType("money");
+                entity.Property(e => e.price).HasColumnType("money");
 
-                entity.Property(e => e.CurrencyNm)
-                    .HasColumnName("Currency_nm")
-                    .IsUnicode(false);
+                entity.HasOne(d => d.calevent)
+                    .WithMany(p => p.pcm_ordersession)
+                    .HasForeignKey(d => d.caleventid)
+                    .HasConstraintName("pcm_caleventsession_fk");
 
-                entity.Property(e => e.InvoiceId).HasColumnName("Invoice_Id");
+                entity.HasOne(d => d.order)
+                    .WithMany(p => p.pcm_ordersession)
+                    .HasForeignKey(d => d.orderid)
+                    .HasConstraintName("pcm_odersession_fk");
+            });
 
-                entity.Property(e => e.ReferenceNr)
+            modelBuilder.Entity<pcm_payment>(entity =>
+            {
+                entity.HasIndex(e => e.invoiceid)
+                    .HasName("ix_relationship12");
+
+                entity.Property(e => e.amount).HasColumnType("money");
+
+                entity.Property(e => e.currencynm).IsUnicode(false);
+
+                entity.Property(e => e.referencenr)
                     .IsUnicode(false)
                     .HasComment("Reference number - usually invoicenr (variabilni symbol)");
 
-                entity.Property(e => e.TypeNm)
-                    .HasColumnName("Type_nm")
+                entity.Property(e => e.typenm)
                     .IsUnicode(false)
                     .HasComment("Type of the payment (link to PAYMENTTYPE reference table)");
 
-                entity.HasOne(d => d.Invoice)
-                    .WithMany(p => p.Payments)
-                    .HasForeignKey(d => d.InvoiceId)
-                    .HasConstraintName("PCM_InvoicePayment_TB");
+                entity.HasOne(d => d.invoice)
+                    .WithMany(p => p.pcm_payment)
+                    .HasForeignKey(d => d.invoiceid)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("pcm_invoicepayment_tb");
             });
 
             OnModelCreatingPartial(modelBuilder);
@@ -312,12 +226,12 @@ namespace currentweather.Models
         public DbSet<Sensor> Sensor { get; set; }
         public DbSet<WeatherSample> WeatherSample { get; set; }
         public DbSet<WeatherForecast> WeatherForecast { get; set; }
-        public virtual DbSet<Pcm_CalEvent> PcmCalEventTb { get; set; }
-        public virtual DbSet<Pcm_Customer> PcmCustomerTb { get; set; }
-        public virtual DbSet<Pcm_Invoice> PcmInvoiceTb { get; set; }
-        public virtual DbSet<Pcm_OrderSession> PcmOrderSessionTb { get; set; }
-        public virtual DbSet<Pcm_Order> PcmOrderTb { get; set; }
-        public virtual DbSet<Pcm_Payment> PcmPaymentTb { get; set; }
+        public virtual DbSet<pcm_calevent> pcm_calevent { get; set; }
+        public virtual DbSet<pcm_customer> pcm_customer { get; set; }
+        public virtual DbSet<pcm_invoice> pcm_invoice { get; set; }
+        public virtual DbSet<pcm_order> pcm_order { get; set; }
+        public virtual DbSet<pcm_ordersession> pcm_ordersession { get; set; }
+        public virtual DbSet<pcm_payment> pcm_payment { get; set; }
 
     }
 }

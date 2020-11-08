@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
-    public partial class Pcm_Invoice
+    public partial class pcm_invoice
     {
-        public Pcm_Invoice()
+        public pcm_invoice()
         {
-            Payments = new HashSet<Pcm_Payment>();
+            pcm_payment = new HashSet<pcm_payment>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public long OrderId { get; set; }
-        public string InvoiceNr { get; set; }
-        public string Text { get; set; }
-        public decimal Price { get; set; }
-        public string CurrencyNm { get; set; }
-        public DateTime? EventDate { get; set; }
-        public DateTime? Sent { get; set; }
-        public DateTime? Accepted { get; set; }
-        public DateTime? Paid { get; set; }
-        public DateTime? Cancelled { get; set; }
-        public string CanceledReason { get; set; }
-        public byte[] Sourcefile { get; set; }
-        public string Url { get; set; }
-        public byte[] Scan { get; set; }
-        public string EMail { get; set; }
-        public string PostAddr { get; set; }
 
-        public virtual Pcm_Order Order { get; set; }
-        public virtual ICollection<Pcm_Payment> Payments { get; set; }
+        public long id { get; set; }
+        public long orderid { get; set; }
+        public string invoicenr { get; set; }
+        public string text { get; set; }
+        public decimal price { get; set; }
+        public string currencynm { get; set; }
+        public DateTime? eventdate { get; set; }
+        public DateTime? sent { get; set; }
+        public DateTime? accepted { get; set; }
+        public DateTime? paid { get; set; }
+        public DateTime? canceled { get; set; }
+        public string canceledreason { get; set; }
+        public byte[] sourcefile { get; set; }
+        public string link { get; set; }
+        public byte[] scan { get; set; }
+        public string email { get; set; }
+        public string postaddr { get; set; }
+
+        public virtual pcm_order order { get; set; }
+        public virtual ICollection<pcm_payment> pcm_payment { get; set; }
     }
 }

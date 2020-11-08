@@ -12,52 +12,53 @@ using Microsoft.AspNetCore.Authorization;
 namespace currentweather.Controllers
 {
     [AllowAnonymous]
-    //    [Authorize(Policy = "AllowedUsersOnly")]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class Pcm_OrderController : ControllerBase
+    public class pcm_orderController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public Pcm_OrderController(CurrentWeatherContext context)
+        public pcm_orderController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pcm_Order
+        // GET: api/pcm_order
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pcm_Order>>> GetPcmOrderTb()
+        public async Task<ActionResult<IEnumerable<pcm_order>>> Getpcm_order()
         {
-            return await _context.PcmOrderTb.ToListAsync();
+            return await _context.pcm_order.ToListAsync();
         }
 
-        // GET: api/Pcm_Order/5
+        // GET: api/pcm_order/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_Order>> GetPcm_Order(long id)
+        public async Task<ActionResult<pcm_order>> Getpcm_order(long id)
         {
-            var pcm_Order = await _context.PcmOrderTb.FindAsync(id);
+            var pcm_order = await _context.pcm_order.FindAsync(id);
 
-            if (pcm_Order == null)
+            if (pcm_order == null)
             {
                 return NotFound();
             }
 
-            return pcm_Order;
+            return pcm_order;
         }
 
-        // PUT: api/Pcm_Order/5
+        // PUT: api/pcm_order/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_Order(long id, Pcm_Order pcm_Order)
+        public async Task<IActionResult> Putpcm_order(long id, pcm_order pcm_order)
         {
-            if (id != pcm_Order.Id)
+            if (id != pcm_order.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_Order).State = EntityState.Modified;
+            _context.Entry(pcm_order).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Pcm_OrderExists(id))
+                if (!pcm_orderExists(id))
                 {
                     return NotFound();
                 }
@@ -78,51 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/Pcm_Order
+        // POST: api/pcm_order
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pcm_Order>> PostPcm_Order(Pcm_Order pcm_Order)
+        public async Task<ActionResult<pcm_order>> Postpcm_order(pcm_order pcm_order)
         {
-            _context.PcmOrderTb.Add(pcm_Order);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (Pcm_OrderExists(pcm_Order.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.pcm_order.Add(pcm_order);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPcm_Order", new { id = pcm_Order.Id }, pcm_Order);
+            return CreatedAtAction("Getpcm_order", new { id = pcm_order.id }, pcm_order);
         }
 
-        // DELETE: api/Pcm_Order/5
+        // DELETE: api/pcm_order/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_Order>> DeletePcm_Order(long id)
+        public async Task<ActionResult<pcm_order>> Deletepcm_order(long id)
         {
-            var pcm_Order = await _context.PcmOrderTb.FindAsync(id);
-            if (pcm_Order == null)
+            var pcm_order = await _context.pcm_order.FindAsync(id);
+            if (pcm_order == null)
             {
                 return NotFound();
             }
 
-            _context.PcmOrderTb.Remove(pcm_Order);
+            _context.pcm_order.Remove(pcm_order);
             await _context.SaveChangesAsync();
 
-            return pcm_Order;
+            return pcm_order;
         }
 
-        private bool Pcm_OrderExists(long id)
+        private bool pcm_orderExists(long id)
         {
-            return _context.PcmOrderTb.Any(e => e.Id == id);
+            return _context.pcm_order.Any(e => e.id == id);
         }
     }
 }

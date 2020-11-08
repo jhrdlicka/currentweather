@@ -12,52 +12,53 @@ using Microsoft.AspNetCore.Authorization;
 namespace currentweather.Controllers
 {
     [AllowAnonymous]
-    //    [Authorize(Policy = "AllowedUsersOnly")]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class Pcm_PaymentController : ControllerBase
+    public class pcm_paymentController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public Pcm_PaymentController(CurrentWeatherContext context)
+        public pcm_paymentController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pcm_Payment
+        // GET: api/pcm_payment
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pcm_Payment>>> GetPcmPaymentTb()
+        public async Task<ActionResult<IEnumerable<pcm_payment>>> Getpcm_payment()
         {
-            return await _context.PcmPaymentTb.ToListAsync();
+            return await _context.pcm_payment.ToListAsync();
         }
 
-        // GET: api/Pcm_Payment/5
+        // GET: api/pcm_payment/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_Payment>> GetPcm_Payment(long id)
+        public async Task<ActionResult<pcm_payment>> Getpcm_payment(long id)
         {
-            var pcm_Payment = await _context.PcmPaymentTb.FindAsync(id);
+            var pcm_payment = await _context.pcm_payment.FindAsync(id);
 
-            if (pcm_Payment == null)
+            if (pcm_payment == null)
             {
                 return NotFound();
             }
 
-            return pcm_Payment;
+            return pcm_payment;
         }
 
-        // PUT: api/Pcm_Payment/5
+        // PUT: api/pcm_payment/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_Payment(long id, Pcm_Payment pcm_Payment)
+        public async Task<IActionResult> Putpcm_payment(long id, pcm_payment pcm_payment)
         {
-            if (id != pcm_Payment.Id)
+            if (id != pcm_payment.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_Payment).State = EntityState.Modified;
+            _context.Entry(pcm_payment).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Pcm_PaymentExists(id))
+                if (!pcm_paymentExists(id))
                 {
                     return NotFound();
                 }
@@ -78,51 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/Pcm_Payment
+        // POST: api/pcm_payment
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pcm_Payment>> PostPcm_Payment(Pcm_Payment pcm_Payment)
+        public async Task<ActionResult<pcm_payment>> Postpcm_payment(pcm_payment pcm_payment)
         {
-            _context.PcmPaymentTb.Add(pcm_Payment);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (Pcm_PaymentExists(pcm_Payment.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.pcm_payment.Add(pcm_payment);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPcm_Payment", new { id = pcm_Payment.Id }, pcm_Payment);
+            return CreatedAtAction("Getpcm_payment", new { id = pcm_payment.id }, pcm_payment);
         }
 
-        // DELETE: api/Pcm_Payment/5
+        // DELETE: api/pcm_payment/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_Payment>> DeletePcm_Payment(long id)
+        public async Task<ActionResult<pcm_payment>> Deletepcm_payment(long id)
         {
-            var pcm_Payment = await _context.PcmPaymentTb.FindAsync(id);
-            if (pcm_Payment == null)
+            var pcm_payment = await _context.pcm_payment.FindAsync(id);
+            if (pcm_payment == null)
             {
                 return NotFound();
             }
 
-            _context.PcmPaymentTb.Remove(pcm_Payment);
+            _context.pcm_payment.Remove(pcm_payment);
             await _context.SaveChangesAsync();
 
-            return pcm_Payment;
+            return pcm_payment;
         }
 
-        private bool Pcm_PaymentExists(long id)
+        private bool pcm_paymentExists(long id)
         {
-            return _context.PcmPaymentTb.Any(e => e.Id == id);
+            return _context.pcm_payment.Any(e => e.id == id);
         }
     }
 }

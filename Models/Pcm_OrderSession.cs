@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
-    public partial class Pcm_OrderSession
+    public partial class pcm_ordersession
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public long OrderId { get; set; }
-        public string Invoicetext { get; set; }
-        public decimal? Price { get; set; }
-        public string CurrencyNm { get; set; }
-        public long? CaleventId { get; set; }
+        public long id { get; set; }
+        public long orderid { get; set; }
+        public string invoicetext { get; set; }
+        public decimal? price { get; set; }
+        public string currencynm { get; set; }
+        public long? caleventid { get; set; }
 
-        public virtual Pcm_CalEvent Calevent { get; set; }
-        public virtual Pcm_Order Order { get; set; }
+        public virtual pcm_calevent calevent { get; set; }
+        public virtual pcm_order order { get; set; }
     }
 }

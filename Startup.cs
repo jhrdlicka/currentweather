@@ -116,6 +116,22 @@ namespace currentweather
                         return false;
                     });
                 });
+
+                options.AddPolicy("PCMUsersOnly", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    {
+                        //write your logic to check user name .
+                        var email = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+
+                        if (email == "hrdlicka.jan@gmail.com")
+                            return true;
+                        if (email == "mrg.barborahrdlickova@gmail.com")
+                            return true;
+
+                        return false;
+                    });
+                }); 
             });
         }
 

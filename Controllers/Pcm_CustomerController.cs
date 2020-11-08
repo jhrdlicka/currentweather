@@ -12,52 +12,53 @@ using Microsoft.AspNetCore.Authorization;
 namespace currentweather.Controllers
 {
     [AllowAnonymous]
-    //    [Authorize(Policy = "AllowedUsersOnly")]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class Pcm_CustomerController : ControllerBase
+    public class pcm_customerController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public Pcm_CustomerController(CurrentWeatherContext context)
+        public pcm_customerController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/Pcm_Customer
+        // GET: api/pcm_customer
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pcm_Customer>>> GetPcmCustomerTb()
+        public async Task<ActionResult<IEnumerable<pcm_customer>>> Getpcm_customer()
         {
-            return await _context.PcmCustomerTb.ToListAsync();
+            return await _context.pcm_customer.ToListAsync();
         }
 
-        // GET: api/Pcm_Customer/5
+        // GET: api/pcm_customer/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pcm_Customer>> GetPcm_Customer(long id)
+        public async Task<ActionResult<pcm_customer>> Getpcm_customer(long id)
         {
-            var pcm_Customer = await _context.PcmCustomerTb.FindAsync(id);
+            var pcm_customer = await _context.pcm_customer.FindAsync(id);
 
-            if (pcm_Customer == null)
+            if (pcm_customer == null)
             {
                 return NotFound();
             }
 
-            return pcm_Customer;
+            return pcm_customer;
         }
 
-        // PUT: api/Pcm_Customer/5
+        // PUT: api/pcm_customer/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPcm_Customer(long id, Pcm_Customer pcm_Customer)
+        public async Task<IActionResult> Putpcm_customer(long id, pcm_customer pcm_customer)
         {
-            if (id != pcm_Customer.Id)
+            if (id != pcm_customer.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_Customer).State = EntityState.Modified;
+            _context.Entry(pcm_customer).State = EntityState.Modified;
 
             try
             {
@@ -65,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Pcm_CustomerExists(id))
+                if (!pcm_customerExists(id))
                 {
                     return NotFound();
                 }
@@ -78,51 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/Pcm_Customer
+        // POST: api/pcm_customer
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pcm_Customer>> PostPcm_Customer(Pcm_Customer pcm_Customer)
+        public async Task<ActionResult<pcm_customer>> Postpcm_customer(pcm_customer pcm_customer)
         {
-            _context.PcmCustomerTb.Add(pcm_Customer);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (Pcm_CustomerExists(pcm_Customer.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.pcm_customer.Add(pcm_customer);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPcm_Customer", new { id = pcm_Customer.Id }, pcm_Customer);
+            return CreatedAtAction("Getpcm_customer", new { id = pcm_customer.id }, pcm_customer);
         }
 
-        // DELETE: api/Pcm_Customer/5
+        // DELETE: api/pcm_customer/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pcm_Customer>> DeletePcm_Customer(long id)
+        public async Task<ActionResult<pcm_customer>> Deletepcm_customer(long id)
         {
-            var pcm_Customer = await _context.PcmCustomerTb.FindAsync(id);
-            if (pcm_Customer == null)
+            var pcm_customer = await _context.pcm_customer.FindAsync(id);
+            if (pcm_customer == null)
             {
                 return NotFound();
             }
 
-            _context.PcmCustomerTb.Remove(pcm_Customer);
+            _context.pcm_customer.Remove(pcm_customer);
             await _context.SaveChangesAsync();
 
-            return pcm_Customer;
+            return pcm_customer;
         }
 
-        private bool Pcm_CustomerExists(long id)
+        private bool pcm_customerExists(long id)
         {
-            return _context.PcmCustomerTb.Any(e => e.Id == id);
+            return _context.pcm_customer.Any(e => e.id == id);
         }
     }
 }

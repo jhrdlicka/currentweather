@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace currentweather.Models
 {
-    public partial class Pcm_Order
+    public partial class pcm_order
     {
-        public Pcm_Order()
+        public pcm_order()
         {
-            Invoices = new HashSet<Pcm_Invoice>();
-            OrderSessions = new HashSet<Pcm_OrderSession>();
+            pcm_invoice = new HashSet<pcm_invoice>();
+            pcm_ordersession = new HashSet<pcm_ordersession>();
         }
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
-        public int? Sessions { get; set; }
-        public long CustomerId { get; set; }
-        public bool XFullyScheduled { get; set; }
-        public bool XInvoiced { get; set; }
-        public string Invoicetext { get; set; }
-        public decimal? Price { get; set; }
-        public string CurrencyNm { get; set; }
 
-        public virtual Pcm_Customer Customer { get; set; }
-        public virtual ICollection<Pcm_Invoice> Invoices { get; set; }
-        public virtual ICollection<Pcm_OrderSession> OrderSessions { get; set; }
+        public long id { get; set; }
+        public int? sessions { get; set; }
+        public long customerid { get; set; }
+        public bool xfullyscheduled { get; set; }
+        public bool xinvoiced { get; set; }
+        public string invoicetext { get; set; }
+        public decimal? price { get; set; }
+        public string currencynm { get; set; }
+
+        public virtual pcm_customer customer { get; set; }
+        public virtual ICollection<pcm_invoice> pcm_invoice { get; set; }
+        public virtual ICollection<pcm_ordersession> pcm_ordersession { get; set; }
     }
 }
