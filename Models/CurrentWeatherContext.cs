@@ -97,8 +97,6 @@ namespace currentweather.Models
 
                 entity.Property(e => e.phone).IsUnicode(false);
 
-                entity.Property(e => e.photo).HasColumnType("image");
-
                 entity.Property(e => e.price10sessions)
                     .HasColumnType("money")
                     .HasComment("agreed discounted price for 10 sessions");
@@ -136,7 +134,6 @@ namespace currentweather.Models
                 entity.Property(e => e.price).HasColumnType("money");
 
                 entity.Property(e => e.scan)
-                    .HasColumnType("image")
                     .HasComment("Scanned version of the invoice");
 
                 entity.Property(e => e.sent).HasComment("The invoice was sent to the customer");
