@@ -30,14 +30,20 @@ namespace currentweather.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<pcm_calevent>>> Getpcm_calevent()
         {
-            return await _context.pcm_calevent.ToListAsync();
+            //            return await _context.pcm_calevent.Include(d => d.customer).ToListAsync();
+            return await _context.pcm_calevent
+//                                                .Include(d => d.customer)
+                                                .ToListAsync();
         }
 
         // GET: api/pcm_calevent/5
         [HttpGet("{id}")]
         public async Task<ActionResult<pcm_calevent>> Getpcm_calevent(long id)
         {
-            var pcm_calevent = await _context.pcm_calevent.FindAsync(id);
+                        var pcm_calevent = await _context.pcm_calevent.FindAsync(id);
+//            var pcm_calevent = await _context.pcm_calevent
+//                                                .Include(d => d.customer)
+//                                                .SingleOrDefaultAsync(d => d.id == id);                                                
 
             if (pcm_calevent == null)
             {

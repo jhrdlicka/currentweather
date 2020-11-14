@@ -8,6 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+
+class IgnoreJsonAttributesResolver : DefaultContractResolver
+{
+    protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+    {
+        IList<JsonProperty> props = base.CreateProperties(type, memberSerialization);
+        foreach (var prop in props)
+        {
+            prop.Ignored = false;   // Ignore [JsonIgnore]
+            prop.Converter = null;  // Ignore [JsonConverter]
+            prop.PropertyName = prop.UnderlyingName;  // restore original property name
+        }
+        return props;
+    }
+}
 
 namespace currentweather.Controllers
 {
@@ -30,6 +47,7 @@ namespace currentweather.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<pcm_customer>>> Getpcm_customer()
         {
+
             return await _context.pcm_customer.ToListAsync();
         }
 
@@ -45,6 +63,26 @@ namespace currentweather.Controllers
             }
 
             return pcm_customer;
+        }
+
+        // GET: api/pcm_customer/5/photo
+        [HttpGet("{id}/photo")]
+        public async Task<string> Getpcm_customerphoto(long id)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.ContractResolver = new IgnoreJsonAttributesResolver();
+            settings.Formatting = Formatting.Indented;
+
+//            string json = JsonConvert.SerializeObject(foo, settings);
+
+            var pcm_customer = await _context.pcm_customer.FindAsync(id);
+
+            if (pcm_customer == null)
+            {
+                return null;
+            }
+
+            return JsonConvert.SerializeObject(pcm_customer, settings);
         }
 
         // PUT: api/pcm_customer/5

@@ -47,8 +47,6 @@ namespace currentweather.Models
 
             // For Guid Primary Key
             modelBuilder.Entity<AppUser>().Property(p => p.Id).ValueGeneratedOnAdd();
-
-
             
             modelBuilder.Entity<pcm_calevent>(entity =>
             {
@@ -79,6 +77,20 @@ namespace currentweather.Models
                     .HasConstraintName("pcm_customerevent_fk");
             });
 
+            modelBuilder.Entity<pcm_customerphoto>(entity =>
+            {
+                entity.ToTable("pcm_customer")
+                      .HasKey(cp => cp.id);
+
+                entity.Property(cp => cp.id).HasColumnName("id");
+
+                entity.Property(cp => cp.photo).HasColumnName("photo");
+
+                entity.HasOne(cp => cp.customer).WithOne()
+                    .HasForeignKey<pcm_customer>(cp => cp.id);
+
+            });
+
             modelBuilder.Entity<pcm_customer>(entity =>
             {
                 entity.Property(e => e.active)
@@ -96,6 +108,8 @@ namespace currentweather.Models
                 entity.Property(e => e.emailinvoice).IsUnicode(false);
 
                 entity.Property(e => e.phone).IsUnicode(false);
+
+                entity.Property(e => e.photo).HasColumnName("photo");
 
                 entity.Property(e => e.price10sessions)
                     .HasColumnType("money")
@@ -225,6 +239,7 @@ namespace currentweather.Models
         public DbSet<WeatherForecast> WeatherForecast { get; set; }
         public virtual DbSet<pcm_calevent> pcm_calevent { get; set; }
         public virtual DbSet<pcm_customer> pcm_customer { get; set; }
+        public virtual DbSet<pcm_customerphoto> pcm_customerphoto { get; set; }
         public virtual DbSet<pcm_invoice> pcm_invoice { get; set; }
         public virtual DbSet<pcm_order> pcm_order { get; set; }
         public virtual DbSet<pcm_ordersession> pcm_ordersession { get; set; }
