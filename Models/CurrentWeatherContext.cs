@@ -130,27 +130,31 @@ namespace currentweather.Models
 
                 entity.Property(e => e.invoicenr).IsUnicode(false);
 
-                entity.Property(e => e.link)
-                    .IsUnicode(false)
-                    .HasComment("Link to a document with the invoice");
-
                 entity.Property(e => e.postaddr)
-                    .IsUnicode(false)
                     .HasComment("Post address where the invoice was sent");
 
                 entity.Property(e => e.price).HasColumnType("money");
 
-                entity.Property(e => e.scan)
-                    .HasComment("Scanned version of the invoice");
+                entity.Property(e => e.scandocumentid).HasComment("Scanned version of the invoice - link to doc_document");
 
                 entity.Property(e => e.sent).HasComment("The invoice was sent to the customer");
 
-                entity.Property(e => e.sourcefile).HasComment("Source file with the invoice");
+                entity.Property(e => e.sourcedocumentid).HasComment("Source file with the invoice - link to doc_documents");
 
                 entity.HasOne(d => d.order)
                     .WithMany(p => p.pcm_invoice)
                     .HasForeignKey(d => d.orderid)
                     .HasConstraintName("pcm_orderinvoice_tb");
+
+                entity.HasOne(d => d.scandocument)
+                    .WithMany(p => p.pcm_invoicescandocument)
+                    .HasForeignKey(d => d.scandocumentid)
+                    .HasConstraintName("doc_scandocumentidinvoice_fk");
+
+                entity.HasOne(d => d.sourcedocument)
+                    .WithMany(p => p.pcm_invoicesourcedocument)
+                    .HasForeignKey(d => d.sourcedocumentid)
+                    .HasConstraintName("doc_sourcedocumentidinvoice_fk");
             });
 
             modelBuilder.Entity<pcm_order>(entity =>

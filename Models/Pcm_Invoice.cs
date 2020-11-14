@@ -22,13 +22,14 @@ namespace currentweather.Models
         public DateTime? paid { get; set; }
         public DateTime? canceled { get; set; }
         public string canceledreason { get; set; }
-        public byte[] sourcefile { get; set; }
-        public string link { get; set; }
-        public byte[] scan { get; set; }
+        public long? sourcedocumentid { get; set; }
+        public long? scandocumentid { get; set; }
         public string email { get; set; }
         public string postaddr { get; set; }
 
         public virtual pcm_order order { get; set; }
+        public virtual doc_document scandocument { get; set; }
+        public virtual doc_document sourcedocument { get; set; }
         public virtual ICollection<pcm_payment> pcm_payment { get; set; }
     }
 }

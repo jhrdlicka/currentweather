@@ -7,6 +7,8 @@ namespace currentweather.Models
     {
         public doc_document()
         {
+            pcm_invoicescandocument = new HashSet<pcm_invoice>();
+            pcm_invoicesourcedocument = new HashSet<pcm_invoice>();
             pcm_customer = new HashSet<pcm_customer>();
         }
 
@@ -14,6 +16,8 @@ namespace currentweather.Models
         public byte[] content { get; set; }
         public string url { get; set; }
 
+        public virtual ICollection<pcm_invoice> pcm_invoicescandocument { get; set; }
+        public virtual ICollection<pcm_invoice> pcm_invoicesourcedocument { get; set; }
         public virtual ICollection<pcm_customer> pcm_customer { get; set; }
     }
 }
