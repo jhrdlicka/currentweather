@@ -17,49 +17,48 @@ namespace currentweather.Controllers
     [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
-    public class pcm_customerController : ControllerBase
+    public class doc_documentController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
 
-        public pcm_customerController(CurrentWeatherContext context)
+        public doc_documentController(CurrentWeatherContext context)
         {
             _context = context;
         }
 
-        // GET: api/pcm_customer
+        // GET: api/doc_document
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<pcm_customer>>> Getpcm_customer()
+        public async Task<ActionResult<IEnumerable<doc_document>>> Getdoc_document()
         {
-
-            return await _context.pcm_customer.ToListAsync();
+            return await _context.doc_document.ToListAsync();
         }
 
-        // GET: api/pcm_customer/5
+        // GET: api/doc_document/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<pcm_customer>> Getpcm_customer(long id)
+        public async Task<ActionResult<doc_document>> Getdoc_document(long id)
         {
-            var pcm_customer = await _context.pcm_customer.FindAsync(id);
+            var doc_document = await _context.doc_document.FindAsync(id);
 
-            if (pcm_customer == null)
+            if (doc_document == null)
             {
                 return NotFound();
             }
 
-            return pcm_customer;
+            return doc_document;
         }
 
-        // PUT: api/pcm_customer/5
+        // PUT: api/doc_document/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> Putpcm_customer(long id, pcm_customer pcm_customer)
+        public async Task<IActionResult> Putdoc_document(long id, doc_document doc_document)
         {
-            if (id != pcm_customer.id)
+            if (id != doc_document.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(pcm_customer).State = EntityState.Modified;
+            _context.Entry(doc_document).State = EntityState.Modified;
 
             try
             {
@@ -67,7 +66,7 @@ namespace currentweather.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!pcm_customerExists(id))
+                if (!doc_documentExists(id))
                 {
                     return NotFound();
                 }
@@ -80,37 +79,37 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
-        // POST: api/pcm_customer
+        // POST: api/doc_document
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<pcm_customer>> Postpcm_customer(pcm_customer pcm_customer)
+        public async Task<ActionResult<doc_document>> Postdoc_document(doc_document doc_document)
         {
-            _context.pcm_customer.Add(pcm_customer);
+            _context.doc_document.Add(doc_document);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("Getpcm_customer", new { id = pcm_customer.id }, pcm_customer);
+            return CreatedAtAction("Getdoc_document", new { id = doc_document.id }, doc_document);
         }
 
-        // DELETE: api/pcm_customer/5
+        // DELETE: api/doc_document/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<pcm_customer>> Deletepcm_customer(long id)
+        public async Task<ActionResult<doc_document>> Deletedoc_document(long id)
         {
-            var pcm_customer = await _context.pcm_customer.FindAsync(id);
-            if (pcm_customer == null)
+            var doc_document = await _context.doc_document.FindAsync(id);
+            if (doc_document == null)
             {
                 return NotFound();
             }
 
-            _context.pcm_customer.Remove(pcm_customer);
+            _context.doc_document.Remove(doc_document);
             await _context.SaveChangesAsync();
 
-            return pcm_customer;
+            return doc_document;
         }
 
-        private bool pcm_customerExists(long id)
+        private bool doc_documentExists(long id)
         {
-            return _context.pcm_customer.Any(e => e.id == id);
+            return _context.doc_document.Any(e => e.id == id);
         }
     }
 }
