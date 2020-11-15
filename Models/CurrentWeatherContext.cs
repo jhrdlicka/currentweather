@@ -82,6 +82,26 @@ namespace currentweather.Models
                     .HasConstraintName("pcm_customerevent_fk");
             });
 
+            modelBuilder.Entity<pcm_gcalevent>(entity =>
+            {
+                entity.HasIndex(e => e.caleventid)
+                    .HasName("IX_Relationship2");
+
+                entity.HasIndex(e => e.customerid)
+                    .HasName("IX_Relationship1");
+
+                entity.HasIndex(e => e.gcalid)
+                    .HasName("gcalid")
+                    .IsUnique();
+
+                entity.Property(e => e.gcalid)
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.gcaljson).IsRequired();
+            });
+
             modelBuilder.Entity<pcm_customer>(entity =>
             {
                 entity.Property(e => e.active).HasDefaultValueSql("((1))");
@@ -235,6 +255,7 @@ namespace currentweather.Models
         public DbSet<WeatherSample> WeatherSample { get; set; }
         public DbSet<WeatherForecast> WeatherForecast { get; set; }
         public virtual DbSet<pcm_calevent> pcm_calevent { get; set; }
+        public virtual DbSet<pcm_gcalevent> pcm_gcalevent { get; set; }
         public virtual DbSet<pcm_customer> pcm_customer { get; set; }
         public virtual DbSet<pcm_invoice> pcm_invoice { get; set; }
         public virtual DbSet<pcm_order> pcm_order { get; set; }
