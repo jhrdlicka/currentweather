@@ -12,8 +12,7 @@ namespace currentweather.Models
         }
 
         public long id { get; set; }
-        public string firstname { get; set; }
-        public string surname { get; set; }
+        public string name { get; set; }
         public string emailcalendar { get; set; }
         public string emailinvoice { get; set; }
         public string phone { get; set; }

@@ -12,19 +12,10 @@ namespace currentweather.Models
 
         public long id { get; set; }
         public DateTime? start { get; set; }
-        public TimeSpan? duration { get; set; }
+        public long? duration { get; set; }
         public string title { get; set; }
         public long? customerid { get; set; }
         public string gcalid { get; set; }
-        public string gcalstatus { get; set; }
-        public string gcallink { get; set; }
-        public DateTime? gcalcreated { get; set; }
-        public DateTime? gcalupdated { get; set; }
-        public string gcalsummary { get; set; }
-        public string gcaldescription { get; set; }
-        public string gcallocation { get; set; }
-        public DateTime? gcalstart { get; set; }
-        public DateTime? gcalend { get; set; }
         public string gcaljson { get; set; }
         public string xordered { get; set; }
         public string invoicetext { get; set; }

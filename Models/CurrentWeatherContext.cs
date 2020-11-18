@@ -62,10 +62,6 @@ namespace currentweather.Models
 
                 entity.Property(e => e.gcalid).IsUnicode(false);
 
-                entity.Property(e => e.gcallink).IsUnicode(false);
-
-                entity.Property(e => e.gcalstatus).IsUnicode(false);
-
                 entity.Property(e => e.price).HasColumnType("money");
 
                 entity.Property(e => e.xordered)
@@ -80,26 +76,6 @@ namespace currentweather.Models
                     .HasForeignKey(d => d.customerid)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("pcm_customerevent_fk");
-            });
-
-            modelBuilder.Entity<pcm_gcalevent>(entity =>
-            {
-                entity.HasIndex(e => e.caleventid)
-                    .HasName("IX_Relationship2");
-
-                entity.HasIndex(e => e.customerid)
-                    .HasName("IX_Relationship1");
-
-                entity.HasIndex(e => e.gcalid)
-                    .HasName("gcalid")
-                    .IsUnique();
-
-                entity.Property(e => e.gcalid)
-                    .IsRequired()
-                    .HasMaxLength(1000)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.gcaljson).IsRequired();
             });
 
             modelBuilder.Entity<pcm_customer>(entity =>
@@ -126,7 +102,7 @@ namespace currentweather.Models
                     .HasColumnType("money")
                     .HasComment("Agreed price per session");
 
-                entity.Property(e => e.surname).IsRequired();
+                entity.Property(e => e.name).IsRequired();
 
                 entity.HasOne(d => d.photodocument)
                     .WithMany(p => p.pcm_customer)
@@ -255,7 +231,6 @@ namespace currentweather.Models
         public DbSet<WeatherSample> WeatherSample { get; set; }
         public DbSet<WeatherForecast> WeatherForecast { get; set; }
         public virtual DbSet<pcm_calevent> pcm_calevent { get; set; }
-        public virtual DbSet<pcm_gcalevent> pcm_gcalevent { get; set; }
         public virtual DbSet<pcm_customer> pcm_customer { get; set; }
         public virtual DbSet<pcm_invoice> pcm_invoice { get; set; }
         public virtual DbSet<pcm_order> pcm_order { get; set; }
