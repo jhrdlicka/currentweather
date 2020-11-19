@@ -17,7 +17,7 @@ namespace currentweather.Models
         public long? customerid { get; set; }
         public string gcalid { get; set; }
         public string gcaljson { get; set; }
-        public string xordered { get; set; }
+        public bool xordered { get; set; }
         public string invoicetext { get; set; }
         public decimal? price { get; set; }
         public string currencynm { get; set; }
