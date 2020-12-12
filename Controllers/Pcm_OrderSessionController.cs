@@ -47,6 +47,25 @@ namespace currentweather.Controllers
             return pcm_ordersession;
         }
 
+        // GET: api/pcm_ordersession/caleventid/5
+        [HttpGet("caleventid/{id}")]
+        public async Task<ActionResult<IEnumerable<pcm_ordersession>>> Getpcm_ordersession_caleventid(long id)
+        {
+            return await _context.pcm_ordersession
+                .Where(os => os.caleventid == id)
+                .ToListAsync();
+        }
+
+        // GET: api/pcm_ordersession/orderid/5
+        [HttpGet("orderid/{id}")]
+        public async Task<ActionResult<IEnumerable<pcm_ordersession>>> Getpcm_ordersession_orderid(long id)
+        {
+            return await _context.pcm_ordersession
+                .Where(os => os.orderid == id)
+                .ToListAsync();
+        }
+
+
         // PUT: api/pcm_ordersession/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
