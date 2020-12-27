@@ -15,6 +15,7 @@ namespace currentweather.Models
         public string name { get; set; }
         public string emailcalendar { get; set; }
         public string emailinvoice { get; set; }
+        public string postaddr { get; set; }
         public string phone { get; set; }
         public bool? active { get; set; }
         public decimal? pricesession { get; set; }

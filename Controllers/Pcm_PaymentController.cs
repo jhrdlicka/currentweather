@@ -47,6 +47,17 @@ namespace currentweather.Controllers
             return pcm_payment;
         }
 
+
+        // GET: api/pcm_payment/invoiceid/5
+        [HttpGet("invoiceid/{id}")]
+        public async Task<ActionResult<IEnumerable<pcm_payment>>> Getpcm_payment_invoiceid(long id)
+        {
+            return await _context.pcm_payment
+                .Where(os => os.invoiceid == id)
+                .ToListAsync();
+        }
+
+
         // PUT: api/pcm_payment/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.

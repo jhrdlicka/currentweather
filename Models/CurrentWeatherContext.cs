@@ -53,6 +53,33 @@ namespace currentweather.Models
                 entity.Property(e => e.url).IsUnicode(false);
             });
 
+            modelBuilder.Entity<ker_reference>(entity =>
+            {
+                entity.HasIndex(e => new { e.id, e.reftabnm, e.namenm })
+                    .HasName("UQ__ker_refe__9A5F5B8BFCAC0E20")
+                    .IsUnique();
+
+                entity.Property(e => e.namenm)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.reftabnm)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<ker_reftab>(entity =>
+            {
+                entity.HasIndex(e => new { e.id, e.reftabnm })
+                    .HasName("UQ__ker_reft__7AFB89079E5D66BB")
+                    .IsUnique();
+
+                entity.Property(e => e.reftabnm)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+
             modelBuilder.Entity<pcm_calevent>(entity =>
             {
                 entity.HasIndex(e => e.customerid)
@@ -237,7 +264,8 @@ namespace currentweather.Models
         public virtual DbSet<pcm_ordersession> pcm_ordersession { get; set; }
         public virtual DbSet<pcm_payment> pcm_payment { get; set; }
         public virtual DbSet<doc_document> doc_document { get; set; }
-
+        public virtual DbSet<ker_reference> ker_reference { get; set; }
+        public virtual DbSet<ker_reftab> ker_reftab { get; set; }
 
     }
 }
