@@ -19,6 +19,7 @@ namespace currentweather.Models
         public DateTime? eventdate { get; set; }
         public DateTime? sent { get; set; }
         public DateTime? accepted { get; set; }
+        public DateTime? due { get; set; }
         public DateTime? paid { get; set; }
         public DateTime? canceled { get; set; }
         public string canceledreason { get; set; }

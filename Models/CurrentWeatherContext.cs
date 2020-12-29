@@ -21,14 +21,6 @@ namespace currentweather.Models
             Configuration = configuration;
         }
 
-        /*
-
-        public CurrentWeatherContext(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-        */
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

@@ -53,7 +53,7 @@ namespace currentweather.Controllers
         public async Task<ActionResult<IEnumerable<pcm_payment>>> Getpcm_payment_invoiceid(long id)
         {
             return await _context.pcm_payment
-                .Where(os => os.invoiceid == id)
+                .Where(p => p.invoiceid == id)
                 .ToListAsync();
         }
 
