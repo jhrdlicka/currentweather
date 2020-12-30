@@ -11,9 +11,8 @@ namespace currentweather.Models
         public decimal? price { get; set; }
         public string currencynm { get; set; }
         public long? caleventid { get; set; }
-        public long? xorder { get
-            { return 1;  }
-        }
+        public int? xorder { get; set; }
+
         public virtual pcm_calevent calevent { get; set; }
         public virtual pcm_order order { get; set; }
     }

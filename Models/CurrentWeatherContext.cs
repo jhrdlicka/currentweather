@@ -203,6 +203,8 @@ namespace currentweather.Models
 
                 entity.Property(e => e.currencynm).IsUnicode(false);
 
+                entity.Property(e => e.xorder).HasComputedColumnSql("([dbo].[pcm_ordersession_getxorder]([id]))");
+
                 entity.Property(e => e.price).HasColumnType("money");
 
                 entity.HasOne(d => d.calevent)
