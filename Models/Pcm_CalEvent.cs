@@ -17,12 +17,10 @@ namespace currentweather.Models
         public long? customerid { get; set; }
         public string gcalid { get; set; }
         public string gcaljson { get; set; }
-        public bool xordered { get; set; }
         public string invoicetext { get; set; }
-        public decimal? price { get; set; }
-        public string currencynm { get; set; }
         public DateTime? canceled { get; set; }
         public string canceledreason { get; set; }
+        public decimal? units { get; set; }
 
         public virtual pcm_customer customer { get; set; }
         public virtual ICollection<pcm_ordersession> pcm_ordersession { get; set; }

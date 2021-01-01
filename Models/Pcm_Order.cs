@@ -14,11 +14,11 @@ namespace currentweather.Models
         public long id { get; set; }
         public int? sessions { get; set; }
         public long customerid { get; set; }
-        public bool xfullyscheduled { get; set; }
-        public bool xinvoiced { get; set; }
         public string invoicetext { get; set; }
         public decimal? price { get; set; }
         public string currencynm { get; set; }
+        public decimal? rate { get; set; }
+        public decimal? discount { get; set; }
 
         public virtual pcm_customer customer { get; set; }
         public virtual ICollection<pcm_invoice> pcm_invoice { get; set; }

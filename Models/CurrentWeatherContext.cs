@@ -77,18 +77,11 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.customerid)
                     .HasName("ix_relationship2");
 
-                entity.Property(e => e.currencynm).IsUnicode(false);
 
                 entity.Property(e => e.gcalid).IsUnicode(false);
 
-                entity.Property(e => e.price).HasColumnType("money");
+                entity.Property(e => e.units).HasColumnType("numeric(18, 5)");
 
-                entity.Property(e => e.xordered)
-                    .IsRequired()
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .IsFixedLength()
-                    .HasComment("There exists an OrderSession for this CalEvent (the event/session is covered by any order)");
 
                 entity.HasOne(d => d.customer)
                     .WithMany(p => p.pcm_calevent)
@@ -113,13 +106,11 @@ namespace currentweather.Models
 
                 entity.Property(e => e.phone).IsUnicode(false);
 
-                entity.Property(e => e.price10sessions)
-                    .HasColumnType("money")
-                    .HasComment("agreed discounted price for 10 sessions");
-
-                entity.Property(e => e.pricesession)
+                entity.Property(e => e.rate)
                     .HasColumnType("money")
                     .HasComment("Agreed price per session");
+
+
 
                 entity.Property(e => e.name).IsRequired();
 
@@ -179,13 +170,18 @@ namespace currentweather.Models
 
                 entity.Property(e => e.currencynm).IsUnicode(false);
 
+                entity.Property(e => e.discount).HasColumnType("numeric(18, 5)");
+
                 entity.Property(e => e.price)
                     .HasColumnType("money")
                     .HasComment("Agreed price of the order");
 
-                entity.Property(e => e.xfullyscheduled).HasComment("All OrderSessions are linked to non-deleted CalEvents");
+                entity.Property(e => e.rate).HasColumnType("money");
 
-                entity.Property(e => e.xinvoiced).HasComment("The invoice for for the order was sent");
+
+
+
+                entity.Property(e => e.discount).HasColumnType("numeric(18, 5)");
 
                 entity.HasOne(d => d.customer)
                     .WithMany(p => p.pcm_order)
@@ -200,8 +196,6 @@ namespace currentweather.Models
 
                 entity.HasIndex(e => e.orderid)
                     .HasName("ix_relationship9");
-
-                entity.Property(e => e.currencynm).IsUnicode(false);
 
                 entity.Property(e => e.xorder).HasComputedColumnSql("([dbo].[pcm_ordersession_getxorder]([id]))");
 
