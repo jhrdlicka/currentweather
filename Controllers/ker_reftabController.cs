@@ -6,9 +6,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace currentweather.Controllers
 {
+    [AllowAnonymous]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
+    [EnableCors]
     [Route("api/[controller]")]
     [ApiController]
     public class ker_reftabController : ControllerBase
