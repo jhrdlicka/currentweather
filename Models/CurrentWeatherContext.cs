@@ -197,7 +197,7 @@ namespace currentweather.Models
                 entity.HasIndex(e => e.orderid)
                     .HasName("ix_relationship9");
 
-                entity.Property(e => e.xorder).HasComputedColumnSql("([dbo].[pcm_ordersession_getxorder]([id]))");
+                entity.Property(e => e.xord).HasComputedColumnSql("[dbo].[pcm_ordersession_getxord]([id])");
 
                 entity.Property(e => e.price).HasColumnType("money");
 

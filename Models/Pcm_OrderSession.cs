@@ -10,8 +10,10 @@ namespace currentweather.Models
         public string invoicetext { get; set; }
         public decimal? price { get; set; }
         public long? caleventid { get; set; }
-        public int? xorder { get; set; }
         public decimal? rate { get; set; }
+
+    // computed columns
+        public int? xord { get; set; }
 
         public virtual pcm_calevent calevent { get; set; }
         public virtual pcm_order order { get; set; }
