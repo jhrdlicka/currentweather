@@ -236,6 +236,93 @@ namespace currentweather.Models
                     .HasConstraintName("pcm_invoicepayment_tb");
             });
 
+            modelBuilder.Entity<iot_device>(entity =>
+            {
+                entity.Property(e => e.devicecategorynm)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasComment("Device category (SENSOR, DRIVER)");
+
+                entity.Property(e => e.code)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.devicetypenm)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.locationnm)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.unitnm)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<iot_sample>(entity =>
+            {
+                entity.HasIndex(e => e.calendardayid)
+                    .HasName("IX_Relationship3");
+
+                entity.HasIndex(e => e.deviceid)
+                    .HasName("IX_Relationship2");
+
+                entity.Property(e => e.value).HasColumnType("numeric(18, 6)");
+
+                entity.HasOne(d => d.calendarday)
+                    .WithMany(p => p.iot_sample)
+                    .HasForeignKey(d => d.calendardayid)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("iot_samplecalendarday_fk");
+
+                entity.HasOne(d => d.device)
+                    .WithMany(p => p.iot_sample)
+                    .HasForeignKey(d => d.deviceid)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("iot_devicesample_fk");
+            });
+
+            modelBuilder.Entity<iot_task>(entity =>
+            {
+                entity.HasIndex(e => e.deviceid)
+                    .HasName("IX_Relationship1");
+
+                entity.Property(e => e.command)
+                    .IsRequired()
+                    .IsUnicode(false);
+
+                entity.Property(e => e.taskstatusnm)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.device)
+                    .WithMany(p => p.iot_task)
+                    .HasForeignKey(d => d.deviceid)
+                    .HasConstraintName("iot_devicetask_fk");
+            });
+
+            modelBuilder.Entity<iot_weatherforecast>(entity =>
+            {
+                entity.HasIndex(e => e.calendardayid)
+                    .HasName("IX_Relationship5");
+
+                entity.Property(e => e.locationnm)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.calendarday)
+                    .WithMany(p => p.iot_weatherforecast)
+                    .HasForeignKey(d => d.calendardayid)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("iot_calendardayweatherforecast_fk");
+            });
+
             OnModelCreatingPartial(modelBuilder);
         }
 
@@ -254,6 +341,10 @@ namespace currentweather.Models
         public virtual DbSet<doc_document> doc_document { get; set; }
         public virtual DbSet<ker_reference> ker_reference { get; set; }
         public virtual DbSet<ker_reftab> ker_reftab { get; set; }
-
+        public virtual DbSet<iot_calendarday> iot_calendarday { get; set; }
+        public virtual DbSet<iot_device> iot_device { get; set; }
+        public virtual DbSet<iot_sample> iot_sample { get; set; }
+        public virtual DbSet<iot_task> iot_task { get; set; }
+        public virtual DbSet<iot_weatherforecast> iot_weatherforecast { get; set; }
     }
 }
