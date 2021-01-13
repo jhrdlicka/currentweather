@@ -47,6 +47,20 @@ namespace currentweather.Controllers
             return iot_task;
         }
 
+        // GET: api/iot_task/devicecode/DEVICE01
+        [HttpGet("devicecode/{code}")]
+        public async Task<ActionResult<IEnumerable<iot_task>>> Getiot_task_devicecode(String code)
+        {
+            var getstatuses = new string[] { "SCHEDULED", "ACCEPTED" };
+            var tasks = _context.iot_task
+                    .Where(d => d.device.code==code)
+                    .Where(d => !d.completed.HasValue)
+                    .Where(d => getstatuses.Any(s => d.taskstatusnm==s));
+
+             return await tasks.ToListAsync();
+        }
+
+
         // PUT: api/iot_task/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -78,6 +92,144 @@ namespace currentweather.Controllers
 
             return NoContent();
         }
+
+
+        // PUT: api/iot_task/completed/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("completed/{id}")]
+        public async Task<IActionResult> Putiot_task_completed(long id, iot_task iot_task)
+        {
+            if (id != iot_task.id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(iot_task).State = EntityState.Modified;
+
+            try
+            {
+                if (iot_task.completed.HasValue)
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  completed={1}, " +
+                        "  taskstatusnm='COMPLETED' " +
+                        "  WHERE id={0}",
+                        parameters: new[] { iot_task.id.ToString(), iot_task.completed.ToString() });
+                else                    
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  completed=CURRENT_TIMESTAMP, " +
+                        "  taskstatusnm='COMPLETED' " +
+                        "  WHERE id={0}",
+                        parameters: iot_task.id);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!iot_taskExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // PUT: api/iot_task/accepted/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("accepted/{id}")]
+        public async Task<IActionResult> Putiot_task_accepted(long id, iot_task iot_task)
+        {
+            if (id != iot_task.id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(iot_task).State = EntityState.Modified;
+
+            try
+            {
+                if (iot_task.accepted.HasValue)
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  accepted={1}, " +
+                        "  taskstatusnm='ACCEPTED' " +
+                        "  WHERE id={0}",
+                        parameters: new[] { iot_task.id.ToString(), iot_task.accepted.ToString() });
+                else
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  accepted=CURRENT_TIMESTAMP, " +
+                        "  taskstatusnm='ACCEPTED' " +
+                        "  WHERE id={0}",
+                        parameters: iot_task.id);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!iot_taskExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // PUT: api/iot_task/failed/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("failed/{id}")]
+        public async Task<IActionResult> Putiot_task_failed(long id, iot_task iot_task)
+        {
+            if (id != iot_task.id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(iot_task).State = EntityState.Modified;
+
+            try
+            {
+                if (iot_task.completed.HasValue)
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  completed={1}, " +
+                        "  taskstatusnm='FAILED' " +
+                        "  WHERE id={0}",
+                        parameters: new[] { iot_task.id.ToString(), iot_task.completed.ToString() });
+                else
+                    await _context.Database.ExecuteSqlRawAsync(
+                        "UPDATE iot_task SET " +
+                        "  completed=null, " +
+                        "  taskstatusnm='FAILED' " +
+                        "  WHERE id={0}",
+                        parameters: iot_task.id);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!iot_taskExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+
 
         // POST: api/iot_task
         // To protect from overposting attacks, enable the specific properties you want to bind to, for

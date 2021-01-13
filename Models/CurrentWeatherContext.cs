@@ -323,6 +323,15 @@ namespace currentweather.Models
                     .HasConstraintName("iot_calendardayweatherforecast_fk");
             });
 
+            modelBuilder.Entity<iot_calendarday>(entity =>
+            {
+                entity.Property(e => e.date)
+                    .IsRequired()
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+            }
+            );
+
             OnModelCreatingPartial(modelBuilder);
         }
 

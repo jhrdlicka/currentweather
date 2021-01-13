@@ -9,9 +9,9 @@ namespace currentweather.Models
         public long deviceid { get; set; }
         public string command { get; set; }
         public string taskstatusnm { get; set; }
-        public DateTime scheduled { get; set; }
-        public DateTime accepted { get; set; }
-        public DateTime completed { get; set; }
+        public DateTime? scheduled { get; set; }
+        public DateTime? accepted { get; set; }
+        public DateTime? completed { get; set; }
 
         public virtual iot_device device { get; set; }
     }
