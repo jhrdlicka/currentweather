@@ -47,6 +47,18 @@ namespace currentweather.Controllers
             return iot_sample;
         }
 
+        // GET: api/iot_sample/devicecodedate/DEVICE01/2021-01-17/2199-12-31
+        [HttpGet("devicecodedate/{code}/{fromdate}/{todate}")]
+        public async Task<ActionResult<IEnumerable<iot_sample>>> Getiot_sample_devicecodedate(String code, String fromdate, String todate)
+        {
+            var samples = _context.iot_sample
+                    .Where(d => d.device.code == code)
+                    .Where(d => string.Compare(d.calendarday.date, fromdate) >= 0)
+                    .Where(d => string.Compare(d.calendarday.date, todate) <= 0);                    ;
+
+            return await samples.ToListAsync();
+        }
+
         // PUT: api/iot_sample/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -86,13 +98,24 @@ namespace currentweather.Controllers
         public async Task<ActionResult<iot_sample>> Postiot_sample(iot_sample iot_sample)
         {
             // if timestamp is not provided, default it to Now
-            if (iot_sample.timestamp == null) 
+            if (iot_sample.timestamp == DateTime.MinValue)                
                 iot_sample.timestamp = DateTime.Now;
 
             // calculate or validate calendarday
-            String lTimestampDay = iot_sample.timestamp.ToString("dd.MM.yyyy");
+            String lTimestampDay = iot_sample.timestamp.ToString("yyyy-MM-dd");
 
+
+            // start of hack (as I am not able to call another controller
+            //var iot_calendarday = await iot_calendardayController.Getiot_calendarday_getorcreatebydate(lTimestampDay);
             var iot_calendarday = await _context.iot_calendarday.Where(cd => cd.date == lTimestampDay).FirstOrDefaultAsync();
+            if (iot_calendarday == null)
+            {
+                iot_calendarday = new iot_calendarday { date = lTimestampDay };
+                _context.iot_calendarday.Add(iot_calendarday);
+                await _context.SaveChangesAsync();
+            }
+            // end of the hack
+
             if (iot_calendarday == null)
                 return NotFound();
             if (iot_sample.calendardayid == null)

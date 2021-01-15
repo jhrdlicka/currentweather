@@ -91,6 +91,24 @@ namespace currentweather.Controllers
             return CreatedAtAction("Getiot_calendarday", new { id = iot_calendarday.id }, iot_calendarday);
         }
 
+        // POST: api/iot_calendarday/getorcreatebydate/2021-01-18
+        [HttpPost("getorcreatebydate/{pDate}")]
+        public async Task<ActionResult<iot_calendarday>> Getiot_calendarday_getorcreatebydate(String pDate)
+        {
+            var iot_calendarday = await _context.iot_calendarday
+                .Where(e => e.date == pDate)
+                .FirstOrDefaultAsync();
+
+            if (iot_calendarday == null)
+            {
+                var new_calendarday = new iot_calendarday { date = pDate };
+                return await Postiot_calendarday(new_calendarday);
+            }
+            else
+                return Ok(iot_calendarday);
+        }
+
+
         // DELETE: api/iot_calendarday/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<iot_calendarday>> Deleteiot_calendarday(long id)

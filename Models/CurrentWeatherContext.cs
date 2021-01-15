@@ -337,10 +337,6 @@ namespace currentweather.Models
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
        
-        public DbSet<CalendarDay> CalendarDay { get; set; }
-        public DbSet<Sensor> Sensor { get; set; }
-        public DbSet<WeatherSample> WeatherSample { get; set; }
-        public DbSet<WeatherForecast> WeatherForecast { get; set; }
         public virtual DbSet<pcm_calevent> pcm_calevent { get; set; }
         public virtual DbSet<pcm_customer> pcm_customer { get; set; }
         public virtual DbSet<pcm_invoice> pcm_invoice { get; set; }
