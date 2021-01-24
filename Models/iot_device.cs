@@ -7,9 +7,9 @@ namespace currentweather.Models
     {
         public iot_device()
         {
-            subdevices = new HashSet<iot_device>();
-            samples = new HashSet<iot_sample>();
-            tasks = new HashSet<iot_task>();
+            iot_subdevice = new HashSet<iot_device>();
+            iot_sample = new HashSet<iot_sample>();
+            iot_task = new HashSet<iot_task>();
         }
 
         public long id { get; set; }
@@ -23,8 +23,8 @@ namespace currentweather.Models
         public long? masterdeviceid { get; set; }
 
         public virtual iot_device masterdevice { get; set; }
-        public virtual ICollection<iot_device> subdevices { get; set; }
-        public virtual ICollection<iot_sample> samples { get; set; }
-        public virtual ICollection<iot_task> tasks { get; set; }
+        public virtual ICollection<iot_device> iot_subdevice { get; set; }
+        public virtual ICollection<iot_sample> iot_sample { get; set; }
+        public virtual ICollection<iot_task> iot_task { get; set; }
     }
 }

@@ -261,6 +261,11 @@ namespace currentweather.Models
                 entity.Property(e => e.unitnm)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.masterdevice)
+                    .WithMany(p => p.iot_subdevice)
+                    .HasForeignKey(d => d.masterdeviceid)
+                    .HasConstraintName("iot_masterdevice_fk");
             });
 
             modelBuilder.Entity<iot_sample>(entity =>
@@ -280,7 +285,7 @@ namespace currentweather.Models
                     .HasConstraintName("iot_samplecalendarday_fk");
 
                 entity.HasOne(d => d.device)
-                    .WithMany(p => p.samples)
+                    .WithMany(p => p.iot_sample)
                     .HasForeignKey(d => d.deviceid)
                     .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("iot_devicesample_fk");
@@ -301,7 +306,7 @@ namespace currentweather.Models
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.device)
-                    .WithMany(p => p.tasks)
+                    .WithMany(p => p.iot_task)
                     .HasForeignKey(d => d.deviceid)
                     .HasConstraintName("iot_devicetask_fk");
             });

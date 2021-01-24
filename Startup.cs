@@ -20,6 +20,7 @@ using Google.Cloud.Diagnostics.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Newtonsoft.Json;
 
 namespace currentweather
 {
@@ -67,7 +68,11 @@ namespace currentweather
             //    //                .AddRoles<IdentityRole>()
             //    .AddEntityFrameworkStores<CurrentWeatherContext>();
 
-            services.AddControllers();
+            services.AddControllers()    
+                .AddNewtonsoftJson(x =>
+                {
+                    x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                });
 
             services.AddAuthentication(options =>
             {
