@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,12 @@ namespace currentweather.Controllers
     public class iot_deviceController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
 
-        public iot_deviceController(CurrentWeatherContext context)
+        public iot_deviceController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         // GET: api/iot_device
@@ -87,6 +92,10 @@ namespace currentweather.Controllers
         {
             _context.iot_device.Add(iot_device);
             await _context.SaveChangesAsync();
+            //await _hubContext.Clients.All.SendAsync("broadcastMessage", "name", "message from controller");
+            var lMsg = new ServerUpdateHubMsg ("iot_device", ServerUpdateHubMsg.TOperation.INSERT, iot_device.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getiot_device", new { id = iot_device.id }, iot_device);
         }

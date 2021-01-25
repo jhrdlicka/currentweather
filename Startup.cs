@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
+using currentweather.Hubs; 
+
 
 namespace currentweather
 {
@@ -40,6 +42,7 @@ namespace currentweather
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSignalR();
 
             services.AddCors(options =>
             {
@@ -163,6 +166,7 @@ namespace currentweather
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ServerUpdateHub>("/serverupdatehub");
             });
         }
     }
