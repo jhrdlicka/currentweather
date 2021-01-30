@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,14 @@ namespace currentweather.Controllers
     public class iot_sampleController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity; 
 
-        public iot_sampleController(CurrentWeatherContext context)
+        public iot_sampleController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
+            _entity = "iot_sample";
         }
 
         // GET: api/iot_sample
@@ -88,6 +95,10 @@ namespace currentweather.Controllers
                 }
             }
 
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
             return NoContent();
         }
 
@@ -104,7 +115,6 @@ namespace currentweather.Controllers
             // calculate or validate calendarday
             String lTimestampDay = iot_sample.timestamp.ToString("yyyy-MM-dd");
 
-
             // start of hack (as I am not able to call another controller
             //var iot_calendarday = await iot_calendardayController.Getiot_calendarday_getorcreatebydate(lTimestampDay);
             var iot_calendarday = await _context.iot_calendarday.Where(cd => cd.date == lTimestampDay).FirstOrDefaultAsync();
@@ -113,6 +123,10 @@ namespace currentweather.Controllers
                 iot_calendarday = new iot_calendarday { date = lTimestampDay };
                 _context.iot_calendarday.Add(iot_calendarday);
                 await _context.SaveChangesAsync();
+                var lMsg2 = new ServerUpdateHubMsg("iot_calendarday", ServerUpdateHubMsg.TOperation.INSERT, iot_calendarday.id);
+                var lJson2 = JsonConvert.SerializeObject(lMsg2);
+                await _hubContext.Clients.All.SendAsync(lMsg2.entity, lJson2);
+
             }
             // end of the hack
 
@@ -129,6 +143,10 @@ namespace currentweather.Controllers
 
             iot_sample.device = null;
             iot_sample.calendarday = null;
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, iot_sample.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getiot_sample", new { id = iot_sample.id }, iot_sample);
         }
@@ -182,6 +200,10 @@ namespace currentweather.Controllers
 
             _context.iot_sample.Remove(iot_sample);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return iot_sample;
         }

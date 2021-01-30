@@ -24,11 +24,13 @@ namespace currentweather.Controllers
     {
         private readonly CurrentWeatherContext _context;
         private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity;
 
         public iot_deviceController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
             _hubContext = hubContext;
+            _entity = "iot_device";
         }
 
         // GET: api/iot_device
@@ -80,6 +82,9 @@ namespace currentweather.Controllers
                     throw;
                 }
             }
+            var lMsg = new ServerUpdateHubMsg("iot_device", ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return NoContent();
         }
@@ -112,6 +117,10 @@ namespace currentweather.Controllers
 
             _context.iot_device.Remove(iot_device);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg("iot_device", ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return iot_device;
         }
