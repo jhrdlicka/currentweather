@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,15 @@ namespace currentweather.Controllers
     public class ker_reftabController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity;
 
-        public ker_reftabController(CurrentWeatherContext context)
+        public ker_reftabController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
+            _entity = "ker_reftab";
+
         }
 
         // GET: api/ker_reftab
@@ -76,6 +84,10 @@ namespace currentweather.Controllers
                 }
             }
 
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
             return NoContent();
         }
 
@@ -87,6 +99,10 @@ namespace currentweather.Controllers
         {
             _context.ker_reftab.Add(ker_reftab);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, ker_reftab.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getker_reftab", new { id = ker_reftab.id }, ker_reftab);
         }
@@ -103,6 +119,10 @@ namespace currentweather.Controllers
 
             _context.ker_reftab.Remove(ker_reftab);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return ker_reftab;
         }

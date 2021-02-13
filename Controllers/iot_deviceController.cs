@@ -82,7 +82,7 @@ namespace currentweather.Controllers
                     throw;
                 }
             }
-            var lMsg = new ServerUpdateHubMsg("iot_device", ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
             var lJson = JsonConvert.SerializeObject(lMsg);
             await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
@@ -98,7 +98,7 @@ namespace currentweather.Controllers
             _context.iot_device.Add(iot_device);
             await _context.SaveChangesAsync();
             //await _hubContext.Clients.All.SendAsync("broadcastMessage", "name", "message from controller");
-            var lMsg = new ServerUpdateHubMsg ("iot_device", ServerUpdateHubMsg.TOperation.INSERT, iot_device.id);
+            var lMsg = new ServerUpdateHubMsg (_entity, ServerUpdateHubMsg.TOperation.INSERT, iot_device.id);
             var lJson = JsonConvert.SerializeObject(lMsg);
             await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
@@ -118,7 +118,7 @@ namespace currentweather.Controllers
             _context.iot_device.Remove(iot_device);
             await _context.SaveChangesAsync();
 
-            var lMsg = new ServerUpdateHubMsg("iot_device", ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
             var lJson = JsonConvert.SerializeObject(lMsg);
             await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 

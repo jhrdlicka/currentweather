@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,14 @@ namespace currentweather.Controllers
     public class pcm_orderController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity;
 
-        public pcm_orderController(CurrentWeatherContext context)
+        public pcm_orderController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
+            _entity = "pcm_order";
         }
 
         // GET: api/pcm_order
@@ -76,6 +83,10 @@ namespace currentweather.Controllers
                 }
             }
 
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
             return NoContent();
         }
 
@@ -87,6 +98,10 @@ namespace currentweather.Controllers
         {
             _context.pcm_order.Add(pcm_order);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, pcm_order.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getpcm_order", new { id = pcm_order.id }, pcm_order);
         }
@@ -103,6 +118,10 @@ namespace currentweather.Controllers
 
             _context.pcm_order.Remove(pcm_order);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return pcm_order;
         }

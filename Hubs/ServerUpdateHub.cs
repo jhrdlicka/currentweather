@@ -41,13 +41,5 @@ namespace currentweather.Hubs
             await Clients.All.SendAsync("broadcastMessage", name, message);
         }
 
-        /*
-        public async Task SendUpdate(ServerUpdateHubMsg pMsg)
-        {
-            // Call the broadcastMessage method to update clients.
-            await Clients.All.SendAsync(pMsg.entity, pMsg);
-        }
-        */
-
     }
 }

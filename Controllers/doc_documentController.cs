@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,15 @@ namespace currentweather.Controllers
     public class doc_documentController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity;
 
-        public doc_documentController(CurrentWeatherContext context)
+        public doc_documentController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
+            _entity = "doc_document";
+
         }
 
         // GET: api/doc_document
@@ -76,6 +84,10 @@ namespace currentweather.Controllers
                 }
             }
 
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
             return NoContent();
         }
 
@@ -87,6 +99,10 @@ namespace currentweather.Controllers
         {
             _context.doc_document.Add(doc_document);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, doc_document.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getdoc_document", new { id = doc_document.id }, doc_document);
         }
@@ -103,6 +119,10 @@ namespace currentweather.Controllers
 
             _context.doc_document.Remove(doc_document);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return doc_document;
         }

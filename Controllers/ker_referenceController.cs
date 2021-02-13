@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using currentweather.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 
 namespace currentweather.Controllers
 {
@@ -20,10 +23,14 @@ namespace currentweather.Controllers
     public class ker_referenceController : ControllerBase
     {
         private readonly CurrentWeatherContext _context;
+        private readonly IHubContext<ServerUpdateHub> _hubContext;
+        private readonly string _entity;
 
-        public ker_referenceController(CurrentWeatherContext context)
+        public ker_referenceController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
+            _entity = "ker_reference";
         }
 
         // GET: api/ker_reference
@@ -86,6 +93,10 @@ namespace currentweather.Controllers
                 }
             }
 
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
             return NoContent();
         }
 
@@ -97,6 +108,10 @@ namespace currentweather.Controllers
         {
             _context.ker_reference.Add(ker_reference);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, ker_reference.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return CreatedAtAction("Getker_reference", new { id = ker_reference.id }, ker_reference);
         }
@@ -113,6 +128,10 @@ namespace currentweather.Controllers
 
             _context.ker_reference.Remove(ker_reference);
             await _context.SaveChangesAsync();
+
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
 
             return ker_reference;
         }
