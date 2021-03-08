@@ -10,6 +10,7 @@ namespace currentweather.Models
         public long? calendardayid { get; set; }
         public DateTime timestamp { get; set; }
         public decimal? value { get; set; }
+        public int? importance { get; set; }
 
         public virtual iot_calendarday calendarday { get; set; }
         public virtual iot_device device { get; set; }

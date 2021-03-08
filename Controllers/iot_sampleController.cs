@@ -77,6 +77,9 @@ namespace currentweather.Controllers
                 return BadRequest();
             }
 
+            if (iot_sample.importance == null)
+                iot_sample.importance = 0;
+
             _context.Entry(iot_sample).State = EntityState.Modified;
 
             try
@@ -101,6 +104,100 @@ namespace currentweather.Controllers
 
             return NoContent();
         }
+
+        // PUT: api/iot_sample/calcimportance/DEVICE01/2021-01-17/2199-12-31
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [HttpPut("calcimportance/{code}/{fromdate}/{todate}")]
+        public async Task<IActionResult> Putiot_sample(String code, String fromdate, String todate)
+        {
+            const int MAXIMPORTANCE= 9;
+            decimal lMyValue, lMidValue;
+            decimal lDiff;
+            int lImportance;
+            TimeSpan lTimespanBefore, lTimespanAfter;
+            decimal lPct1, lPct2, lPct3, lPct4;             
+
+            var samples = await _context.iot_sample
+                .Where(d => d.device.code == code)
+                .Where(d => string.Compare(d.calendarday.date, fromdate) >= 0)
+                .Where(d => string.Compare(d.calendarday.date, todate) <= 0)
+                .OrderBy(d => d.timestamp)
+                .ToListAsync();
+
+            if ((samples[0].importance??0) != 9)
+            {
+                samples[0].importance = 9;
+                await Putiot_sample(samples[0].id, samples[0]);
+            }
+
+            if ((samples[samples.Count-1].importance ?? 0) != 9)
+            {
+                samples[samples.Count-1].importance = 9;
+                await Putiot_sample(samples[samples.Count-1].id, samples[samples.Count-1]);
+            }
+
+            for (int i = 1; i < samples.Count-1; i++)
+            {
+
+                lMyValue = samples[i].value ?? 0;
+                lImportance = samples[i].importance??0;
+                if ((samples[i].calendardayid != samples[i - 1].calendardayid) ||
+                      (samples[i].calendardayid != samples[i + 1].calendardayid)) // first and last value in the day is always of the highest importance
+                    lImportance = MAXIMPORTANCE;
+                else
+                {
+                    lTimespanBefore = samples[i].timestamp - samples[i - 1].timestamp;
+                    lTimespanAfter = samples[i + 1].timestamp - samples[i].timestamp;
+                    lDiff = (samples[i - 1].value ?? 0) - (samples[i + 1].value ?? 0);            // diff between previous and following values
+                    if ((lTimespanBefore.TotalMilliseconds == 0) && (lTimespanAfter.TotalMilliseconds == 0))  // strange situation... shouldn't happen
+                        lImportance = 9;
+                    else
+                    {
+                        lMidValue = (samples[i - 1].value ?? 0) + Convert.ToDecimal(Decimal.ToDouble(lDiff) * (lTimespanBefore / (lTimespanAfter + lTimespanBefore)));  // weigthed average value
+
+                        // Pct1 ... difference against average value in pct of the value
+                        if ((lMidValue == 0) && (lMyValue == 0))
+                            lPct1 = 0;
+                        else
+                            lPct1 = Math.Abs((lMidValue - lMyValue) / Math.Max(Math.Abs(lMidValue), Math.Abs(lMyValue)));
+
+                        // Pct2 ... difference against average value in pct of the change
+                        if (lDiff == 0)
+                        {
+                            if (lMidValue == lMyValue)
+                                lPct2 = 0;
+                            else
+                                lPct2 = 1;
+                        }
+                        else
+                            lPct2 = Math.Abs((lMidValue - lMyValue) / lDiff);
+
+                        // lPct3 ... how far am I from the previous and next sample
+                        lPct3 = (decimal)(Math.Min(lTimespanBefore.TotalMilliseconds, lTimespanAfter.TotalMilliseconds) / (lTimespanBefore.TotalMilliseconds + lTimespanAfter.TotalMilliseconds));
+
+                        // lPct4 ... 
+                        int lSamplesDay = samples.Where(x => x.calendardayid == samples[i].calendardayid).ToList().Count;
+                        float lAvgDur = 24 * 60 * 60 * 1000 / lSamplesDay;
+                        lPct4 = (decimal)((Math.Max(lTimespanBefore.TotalMilliseconds, lTimespanAfter.TotalMilliseconds)) / lAvgDur);
+
+                        lImportance = (int)Math.Round(Math.Min(lPct1 * 3, 5) + Math.Min(lPct2 * 3, 5) + Math.Min(lPct3 * 4, 1) + Math.Min(lPct4 * 1/2, 3));
+                        lImportance = Math.Min(lImportance, 9);
+                    }
+                }
+
+
+                if (lImportance != (samples[i].importance??0))
+                {
+                    samples[i].importance = lImportance;
+                    Putiot_sample(samples[i].id, samples[i]);
+                }
+
+            }
+
+            return NoContent();
+        }
+
 
         // POST: api/iot_sample
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
