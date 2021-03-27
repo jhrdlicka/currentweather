@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace currentweather.Hubs
 {
+    [AllowAnonymous]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
+    [EnableCors]
     public class ServerUpdateHubMsg {
         public enum TOperation
         { 
@@ -33,6 +39,11 @@ namespace currentweather.Hubs
         }
 
     }
+
+    [AllowAnonymous]
+    //    [Authorize(Policy = "PCMUsersOnly")]
+    [Authorize]
+    [EnableCors]
     public class ServerUpdateHub : Hub
     {
         public async Task Send(string name, string message)

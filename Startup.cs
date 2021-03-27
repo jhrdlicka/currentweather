@@ -41,8 +41,14 @@ namespace currentweather
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSignalR();
+        {            
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.ConfigureNonBreakingSameSiteCookies();
 
             services.AddCors(options =>
             {
@@ -51,14 +57,18 @@ namespace currentweather
                                   {
                                       builder.WithOrigins(
                                           "http://hrdlicky.eu"
+                                          ,"http://www.hrdlicky.eu"
                                           , "http://localhost:53771"
                                           //                                          ,"http://hrdlicky.aspifyhost.com"
                                           )
+                                      .SetIsOriginAllowed((host) => true)
                                       .AllowAnyHeader()
                                       .AllowCredentials()
                                       .AllowAnyMethod();
                                   });
             });
+
+            services.AddSignalR();
 
             services.AddDbContext<CurrentWeatherContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -134,7 +144,7 @@ namespace currentweather
 
                         if (email == "hrdlicka.jan@gmail.com")
                             return true;
-                        if (email == "mrg.barborahrdlickova@gmail.com")
+                        if (email == "mgr.barborahrdlickova@gmail.com")
                             return true;
 
                         return false;
@@ -153,7 +163,7 @@ namespace currentweather
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+//            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -163,10 +173,24 @@ namespace currentweather
             app.UseAuthentication();
             app.UseAuthorization();
 
+            /*
+            app.UseCors(builder =>
+            {
+                builder.WithOrigins("http://hrdlicky.eu"
+                                          , "http://www.hrdlicky.eu"
+                                          , "http://localhost:53771"
+                                          , "https://localhost:53771")
+                    .AllowAnyHeader()
+                    .WithMethods("GET", "POST")
+                    .AllowCredentials();
+            });
+            */
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ServerUpdateHub>("/serverupdatehub");
+                //                endpoints.MapHub<ServerUpdateHub>("/serverupdatehub").RequireCors(MyAllowSpecificOrigins);
             });
         }
     }

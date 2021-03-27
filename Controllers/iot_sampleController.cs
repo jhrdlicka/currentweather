@@ -24,7 +24,7 @@ namespace currentweather.Controllers
     {
         private readonly CurrentWeatherContext _context;
         private readonly IHubContext<ServerUpdateHub> _hubContext;
-        private readonly string _entity; 
+        private readonly string _entity;
 
         public iot_sampleController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
@@ -37,7 +37,8 @@ namespace currentweather.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<iot_sample>>> Getiot_sample()
         {
-            return await _context.iot_sample.ToListAsync();
+            String lToday = DateTime.Now.ToString("yyyy-MM-dd");
+            return await _context.iot_sample.Where(d=>d.calendarday.date == lToday).ToListAsync();
         }
 
         // GET: api/iot_sample/5
@@ -61,7 +62,7 @@ namespace currentweather.Controllers
             var samples = _context.iot_sample
                     .Where(d => d.device.code == code)
                     .Where(d => string.Compare(d.calendarday.date, fromdate) >= 0)
-                    .Where(d => string.Compare(d.calendarday.date, todate) <= 0);                    ;
+                    .Where(d => string.Compare(d.calendarday.date, todate) <= 0);
 
             return await samples.ToListAsync();
         }
@@ -105,11 +106,34 @@ namespace currentweather.Controllers
             return NoContent();
         }
 
+        // PUT: api/iot_sample/calcimportancetodayall
+        [HttpPut("Calcimportancetodayall")]
+        public async Task<IActionResult> Calcimportancetodayall()
+        {            
+            while (true)
+            {
+                String lToday = DateTime.Now.ToString("yyyy-MM-dd");
+                await Calcimportanceall(lToday, lToday);
+                await Task.Delay(10000);
+            }
+        }
+
+        // PUT: api/iot_sample/calcimportanceall/2021-01-17/2199-12-31
+        [HttpPut("calcimportanceall/{fromdate}/{todate}")]
+        public async Task<IActionResult> Calcimportanceall(String fromdate, String todate)
+        {
+            var devices = await _context.iot_device.ToListAsync();
+            for (int i = 0; i < devices.Count; i++)
+            {
+                await Calcimportance(devices[i].code, fromdate, todate);
+            }
+            return NoContent();
+        }
+
+
         // PUT: api/iot_sample/calcimportance/DEVICE01/2021-01-17/2199-12-31
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("calcimportance/{code}/{fromdate}/{todate}")]
-        public async Task<IActionResult> Putiot_sample(String code, String fromdate, String todate)
+        public async Task<IActionResult> Calcimportance(String code, String fromdate, String todate)
         {
             const int MAXIMPORTANCE= 9;
             decimal lMyValue, lMidValue;
@@ -124,6 +148,9 @@ namespace currentweather.Controllers
                 .Where(d => string.Compare(d.calendarday.date, todate) <= 0)
                 .OrderBy(d => d.timestamp)
                 .ToListAsync();
+
+            if (samples.Count==0)
+                return NoContent();
 
             if ((samples[0].importance??0) != 9)
             {
@@ -190,7 +217,7 @@ namespace currentweather.Controllers
                 if (lImportance != (samples[i].importance??0))
                 {
                     samples[i].importance = lImportance;
-                    Putiot_sample(samples[i].id, samples[i]);
+                    await Putiot_sample(samples[i].id, samples[i]);
                 }
 
             }
@@ -273,15 +300,6 @@ namespace currentweather.Controllers
             iot_sample.device = null;
 
             return await Postiot_sample(iot_sample);
-            /*
-            var lIot_sample = await Postiot_sample(iot_sample);
-            var lIot_Sample2 = new iot_sample { id = iot_sample.id};
-            lIot_Sample2.deviceid = iot_sample.deviceid;
-            lIot_Sample2.calendardayid = iot_sample.calendardayid;
-            lIot_Sample2.timestamp = iot_sample.timestamp;
-            lIot_Sample2.value = iot_sample.value;
-            return Created("", lIot_Sample2);
-            */
         }
 
 
