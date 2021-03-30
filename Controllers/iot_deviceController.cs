@@ -105,6 +105,50 @@ namespace currentweather.Controllers
             return CreatedAtAction("Getiot_device", new { id = iot_device.id }, iot_device);
         }
 
+
+        // POST: api/iot_device/copy/5/100
+        [HttpPost("copy/{sourceid}/{masterdeviceid}")]
+        public async Task<ActionResult<iot_device>> Copyiot_device(long sourceid, long? masterdeviceid)
+        {
+            var sourcedevice = await _context.iot_device.FindAsync(sourceid);
+            if (sourcedevice == null)
+            {
+                return NotFound();
+            }
+            var subdevices = await _context.iot_device.Where(d => d.masterdeviceid == sourcedevice.id).ToListAsync();
+
+            var newdevice = new iot_device();
+            sourcedevice.CopyAllPropertiesTo(newdevice);
+
+            newdevice.id = 0;
+            newdevice.code = sourcedevice.code + "_(1)";
+            newdevice.name = sourcedevice.name + " (1)";
+            newdevice.masterdevice = null;
+            newdevice.masterdeviceid = (masterdeviceid==0)?null:masterdeviceid;
+            newdevice.iot_sample = null;
+            newdevice.iot_subdevice = null;
+            newdevice.iot_task = null;
+            
+
+            /*
+            var lResult=await Postiot_device(iot_device);
+            iot_device newdevice = (ObjectResult)lResult.Result;
+            */
+            
+            _context.iot_device.Add(newdevice);
+            await _context.SaveChangesAsync();
+            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, newdevice.id);
+            var lJson = JsonConvert.SerializeObject(lMsg);
+            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+
+            for (int i = 0; i < subdevices.Count; i++) {
+                await Copyiot_device(subdevices[i].id, newdevice.id);
+            }
+
+            // return lResult;
+            return CreatedAtAction("Getiot_device", new { id = newdevice.id }, newdevice);
+        }
+
         // DELETE: api/iot_device/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<iot_device>> Deleteiot_device(long id)

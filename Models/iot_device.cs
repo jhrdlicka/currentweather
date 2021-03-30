@@ -26,5 +26,22 @@ namespace currentweather.Models
         public virtual ICollection<iot_device> iot_subdevice { get; set; }
         public virtual ICollection<iot_sample> iot_sample { get; set; }
         public virtual ICollection<iot_task> iot_task { get; set; }
+
+        public void CopyAllPropertiesTo<T>(T target)
+        {
+            var source = this;
+            var type = typeof(T);
+
+            foreach (var sourceProperty in type.GetProperties())
+            {
+                var targetProperty = type.GetProperty(sourceProperty.Name);
+                targetProperty.SetValue(target, sourceProperty.GetValue(source, null), null);
+            }
+            foreach (var sourceField in type.GetFields())
+            {
+                var targetField = type.GetField(sourceField.Name);
+                targetField.SetValue(target, sourceField.GetValue(source));
+            }
+        }
     }
 }
