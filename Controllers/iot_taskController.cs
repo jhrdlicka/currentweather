@@ -130,7 +130,7 @@ namespace currentweather.Controllers
                 else                    
                     await _context.Database.ExecuteSqlRawAsync(
                         "UPDATE iot_task SET " +
-                        "  completed=CURRENT_TIMESTAMP, " +
+                        "  completed=(SELECT SYSDATETIMEOFFSET() AT TIME ZONE 'UTC'), " +
                         "  taskstatusnm='COMPLETED' " +
                         "  WHERE id={0}",
                         parameters: iot_task.id);
@@ -179,7 +179,7 @@ namespace currentweather.Controllers
                 else
                     await _context.Database.ExecuteSqlRawAsync(
                         "UPDATE iot_task SET " +
-                        "  accepted=CURRENT_TIMESTAMP, " +
+                        "  accepted=(SELECT SYSDATETIMEOFFSET() AT TIME ZONE 'UTC'), " +
                         "  taskstatusnm='ACCEPTED' " +
                         "  WHERE id={0}",
                         parameters: iot_task.id);

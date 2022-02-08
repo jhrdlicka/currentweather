@@ -37,7 +37,7 @@ namespace currentweather.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<iot_sample>>> Getiot_sample()
         {
-            String lToday = DateTime.Now.ToString("yyyy-MM-dd");
+            String lToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
             return await _context.iot_sample.Where(d=>d.calendarday.date == lToday).ToListAsync();
         }
 
@@ -112,7 +112,7 @@ namespace currentweather.Controllers
         {            
             while (true)
             {
-                String lToday = DateTime.Now.ToString("yyyy-MM-dd");
+                String lToday = DateTime.UtcNow.ToString("yyyy-MM-dd");
                 await Calcimportanceall(lToday, lToday);
                 await Task.Delay(10000);
             }
@@ -234,7 +234,7 @@ namespace currentweather.Controllers
         {
             // if timestamp is not provided, default it to Now
             if (iot_sample.timestamp == DateTime.MinValue)                
-                iot_sample.timestamp = DateTime.Now;
+                iot_sample.timestamp = DateTime.UtcNow;
 
             // calculate or validate calendarday
             String lTimestampDay = iot_sample.timestamp.ToString("yyyy-MM-dd");
