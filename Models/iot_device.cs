@@ -10,6 +10,7 @@ namespace currentweather.Models
             iot_subdevice = new HashSet<iot_device>();
             iot_sample = new HashSet<iot_sample>();
             iot_task = new HashSet<iot_task>();
+            iot_log = new HashSet<iot_log>();
         }
 
         public long id { get; set; }
@@ -26,6 +27,7 @@ namespace currentweather.Models
         public virtual ICollection<iot_device> iot_subdevice { get; set; }
         public virtual ICollection<iot_sample> iot_sample { get; set; }
         public virtual ICollection<iot_task> iot_task { get; set; }
+        public virtual ICollection<iot_log> iot_log { get; set; }
 
         public void CopyAllPropertiesTo<T>(T target)
         {

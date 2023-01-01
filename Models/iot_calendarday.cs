@@ -9,6 +9,7 @@ namespace currentweather.Models
         {
             iot_sample = new HashSet<iot_sample>();
             iot_weatherforecast = new HashSet<iot_weatherforecast>();
+            iot_log = new HashSet<iot_log>();
         }
 
         public long id { get; set; }
@@ -18,5 +19,6 @@ namespace currentweather.Models
 
         public virtual ICollection<iot_sample> iot_sample { get; set; }
         public virtual ICollection<iot_weatherforecast> iot_weatherforecast { get; set; }
+        public virtual ICollection<iot_log> iot_log { get; set; }
     }
 }

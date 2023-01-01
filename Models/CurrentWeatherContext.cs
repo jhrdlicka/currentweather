@@ -337,6 +337,29 @@ namespace currentweather.Models
             }
             );
 
+            modelBuilder.Entity<iot_log>(entity =>
+            {
+                entity.HasIndex(e => e.calendardayid)
+                    .HasName("IX_Relationship7");
+
+                entity.HasIndex(e => e.deviceid)
+                    .HasName("IX_Relationship6");
+
+                entity.HasOne(d => d.calendarday)
+                    .WithMany(p => p.iot_log)
+                    .HasForeignKey(d => d.calendardayid)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("iot_logcalendarday_fk");
+
+                entity.HasOne(d => d.device)
+                    .WithMany(p => p.iot_log)
+                    .HasForeignKey(d => d.deviceid)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("iot_devicelog_fk");
+            });
+
+
+
             OnModelCreatingPartial(modelBuilder);
         }
 
@@ -356,5 +379,7 @@ namespace currentweather.Models
         public virtual DbSet<iot_sample> iot_sample { get; set; }
         public virtual DbSet<iot_task> iot_task { get; set; }
         public virtual DbSet<iot_weatherforecast> iot_weatherforecast { get; set; }
+        public virtual DbSet<iot_log> iot_log { get; set; }
+
     }
 }
