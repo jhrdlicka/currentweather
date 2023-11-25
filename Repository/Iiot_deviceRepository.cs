@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace currentweather.Repository
 {
-    public interface Iiot_deviceRepository : IDisposable
+    public interface Iiot_deviceRepository
     {
         public Task<ActionResult<IEnumerable<iot_device>>> Getiot_device();
         public Task<ActionResult<iot_device>> Getiot_device(long id);

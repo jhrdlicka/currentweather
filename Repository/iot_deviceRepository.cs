@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace currentweather.Repository
 {
-    public class iot_deviceRepository : Iiot_deviceRepository, IDisposable
+    public class iot_deviceRepository : Iiot_deviceRepository
     {
         private readonly CurrentWeatherContext _context;
         private readonly IHubContext<ServerUpdateHub> _hubContext;
@@ -122,11 +122,6 @@ namespace currentweather.Repository
             return _context.iot_device.Any(e => e.id == id);
         }
 
-        public void Dispose()
-        {
-            Dispose();
-            GC.SuppressFinalize(this);
-        }
     }
 
 }
