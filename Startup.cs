@@ -21,7 +21,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
-using currentweather.Hubs; 
+using currentweather.Hubs;
+using currentweather.Repository;
 
 
 namespace currentweather
@@ -80,6 +81,7 @@ namespace currentweather
             //    options => options.SignIn.RequireConfirmedAccount = true)
             //    //                .AddRoles<IdentityRole>()
             //    .AddEntityFrameworkStores<CurrentWeatherContext>();
+
 
             services.AddControllers()    
                 .AddNewtonsoftJson(x =>
