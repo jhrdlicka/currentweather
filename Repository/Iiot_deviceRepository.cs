@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using currentweather.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-//using currentweather.Hubs;
-//using Microsoft.AspNetCore.SignalR;
-
-
 
 namespace currentweather.Repository
 {

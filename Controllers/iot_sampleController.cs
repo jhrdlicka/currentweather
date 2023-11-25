@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using currentweather.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using currentweather.Repository;
 
 namespace currentweather.Controllers
 {
@@ -25,12 +25,14 @@ namespace currentweather.Controllers
         private readonly CurrentWeatherContext _context;
         private readonly IHubContext<ServerUpdateHub> _hubContext;
         private readonly string _entity;
+        private Iiot_calendardayRepository _iot_calendardayRepository;
 
         public iot_sampleController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
             _hubContext = hubContext;
             _entity = "iot_sample";
+            _iot_calendardayRepository = new iot_calendardayRepository(_context, _hubContext);
         }
 
         // GET: api/iot_sample
@@ -239,8 +241,9 @@ namespace currentweather.Controllers
             // calculate or validate calendarday
             String lTimestampDay = iot_sample.timestamp.ToString("yyyy-MM-dd");
 
+            var iot_calendarday = await _iot_calendardayRepository.Getiot_calendarday_getorcreatebydate(lTimestampDay);
             // start of hack (as I am not able to call another controller
-            //var iot_calendarday = await iot_calendardayController.Getiot_calendarday_getorcreatebydate(lTimestampDay);
+            /*
             var iot_calendarday = await _context.iot_calendarday.Where(cd => cd.date == lTimestampDay).FirstOrDefaultAsync();
             if (iot_calendarday == null)
             {
@@ -250,8 +253,8 @@ namespace currentweather.Controllers
                 var lMsg2 = new ServerUpdateHubMsg("iot_calendarday", ServerUpdateHubMsg.TOperation.INSERT, iot_calendarday.id);
                 var lJson2 = JsonConvert.SerializeObject(lMsg2);
                 await _hubContext.Clients.All.SendAsync(lMsg2.entity, lJson2);
-
             }
+            */
             // end of the hack
 
             if (iot_calendarday == null)
