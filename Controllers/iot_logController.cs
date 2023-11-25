@@ -167,6 +167,36 @@ namespace currentweather.Controllers
             return await Postiot_log(iot_log);
         }
 
+        public class JsonResult
+        {
+            public long DeletedRows { get; set; }
+        };
+
+        // DELETE: api/iot_log/older/2
+        [HttpDelete("older/{days}")]
+        public async Task<ActionResult<iot_log>> Deleteolderiot_log(int days)
+        {
+            var lIot_log = _context.iot_log.Where(e => e.timestamp < DateTime.UtcNow.AddDays(-days));
+            long lDeletedRows = lIot_log.Count();
+            _context.iot_log.RemoveRange(lIot_log);
+
+            await _context.SaveChangesAsync();
+
+/*
+            var lLogitems = _context.iot_log.Where(e => e.timestamp < DateTime.UtcNow.AddDays(-days));
+            foreach (iot_log lLogitem in lLogitems)
+            {
+                await Deleteiot_log(lLogitem.id);
+            }
+*/
+
+
+            var jsonResult=new JsonResult{DeletedRows=lDeletedRows};
+
+            string returnJson = JsonConvert.SerializeObject(jsonResult);
+            return Ok(returnJson);
+        }
+
 
         // DELETE: api/iot_log/5
         [HttpDelete("{id}")]
