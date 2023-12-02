@@ -30,7 +30,6 @@ namespace currentweather.Repository
             return await _context.iot_device.ToListAsync();
         }
 
-        // GET: api/iot_device/5
         public async Task<ActionResult<iot_device>> Getiot_device(long id)
         {
             var iot_device = await _context.iot_device.FindAsync(id);

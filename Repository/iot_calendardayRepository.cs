@@ -41,12 +41,12 @@ namespace currentweather.Repository
 
         public async Task<ActionResult<iot_calendarday>> Putiot_calendarday(long id, iot_calendarday iot_calendarday)
         {
-            /*
+            
             if (id != iot_calendarday.id)
             {
-                return BadRequest();
+                //return BadRequest();
             }
-            */
+            
 
             _context.Entry(iot_calendarday).State = EntityState.Modified;
 
