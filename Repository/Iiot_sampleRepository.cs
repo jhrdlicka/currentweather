@@ -14,7 +14,7 @@ namespace currentweather.Repository
         public Task<IActionResult> Putiot_sample(long id, iot_sample iot_sample);
         public Task<int> Calcimportancetodayall();
         public Task<int> Calcimportanceall(String fromdate, String todate, int maxtochange);
-        public Task<int> Calcimportanceoldest();
+        public Task<int> Calcimportanceoldest(int maxtochange);
         public Task<int> Calcimportance(String code, String fromdate, String todate, int maxtochange);
         public Task<ActionResult<iot_sample>> Postiot_sample(iot_sample iot_sample);
         public Task<ActionResult<iot_sample>> Postiot_sample_devicecode(string pDeviceCode, iot_sample iot_sample);

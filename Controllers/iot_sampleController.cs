@@ -77,12 +77,12 @@ namespace currentweather.Controllers
             return Ok(await _iot_sampleRepository.Calcimportanceall(fromdate, todate, 999999));
         }
 
-        // PUT: api/iot_sample/calcimportanceoldest
-        [HttpPut("calcimportanceoldest")]
-        public async Task<IActionResult> Calcimportanceoldest()
+        // PUT: api/iot_sample/calcimportanceoldest/200
+        [HttpPut("calcimportanceoldest/{maxtochange}")]
+        public async Task<IActionResult> Calcimportanceoldest(int maxtochange)
         {
             //var lChanged = await _iot_sampleRepository.Calcimportanceoldest();
-            return Ok(await _iot_sampleRepository.Calcimportanceoldest());
+            return Ok(await _iot_sampleRepository.Calcimportanceoldest(maxtochange));
         }
 
         // PUT: api/iot_sample/calcimportance/DEVICE01/2021-01-17/2199-12-31

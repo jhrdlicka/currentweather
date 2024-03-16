@@ -35,9 +35,6 @@ namespace currentweather.Repository
 
         public async Task<ActionResult<iot_sample>> Getiot_sample(long id)
         {
-            if (id == null)
-                throw new System.ArgumentNullException("id");
-
             var iot_sample = await _context.iot_sample.FindAsync(id);
 
             return iot_sample;
@@ -127,15 +124,14 @@ namespace currentweather.Repository
             return lChanged;
         }
 
-        public async Task<int> Calcimportanceoldest()
+        public async Task<int> Calcimportanceoldest(int maxtochange)
         {
-            int MAXTOCHANGE = 50;
-            string sql = $"select * from iot_calendarday where [date] in (select min(mindate) from(select b.date mindate from iot_sample a, iot_calendarday b where a.importance is null and a.calendardayid = b.id group by b.date having count(1) > 20) x)";
+            string sql = $"select * from iot_calendarday where [date] in (select min(mindate) from(select b.date mindate from iot_sample a, iot_calendarday b where a.importance is null and a.calendardayid = b.id group by b.date, a.deviceid having count(1) > 20) x)";
             var oldestcalendarday = _context.iot_calendarday.FromSqlRaw(sql).ToList();
             int lChanged = 0;           
-            for (int i = 0; (i < oldestcalendarday.Count); i++)
+            for (int i = 0; ((i < oldestcalendarday.Count)&&(i<1)); i++)
             {
-                var lLastChanged = await Calcimportanceall(oldestcalendarday[i].date, oldestcalendarday[i].date, MAXTOCHANGE);
+                var lLastChanged = await Calcimportanceall(oldestcalendarday[i].date, oldestcalendarday[i].date, maxtochange);
                 lChanged =lChanged+lLastChanged;
             }
             return lChanged;
@@ -183,8 +179,13 @@ namespace currentweather.Repository
             for (int i = 1; (i < samples.Count-1) &&  (lChanged < maxtochange); i++)
             {
 
+
                 lMyValue = samples[i].value ?? 0;
                 lImportance = samples[i].importance??0;
+
+                if (lImportance == 0)
+                    lImportance = 0;
+
                 if ((samples[i].calendardayid != samples[i - 1].calendardayid) ||
                       (samples[i].calendardayid != samples[i + 1].calendardayid)) // first and last value in the day is always of the highest importance
                     lImportance = MAXIMPORTANCE;
@@ -225,6 +226,7 @@ namespace currentweather.Repository
                         lPct4 = (decimal)((Math.Max(lTimespanBefore.TotalMilliseconds, lTimespanAfter.TotalMilliseconds)) / lAvgDur);
 
                         lImportance = (int)Math.Round(Math.Min(lPct1 * 3, 5) + Math.Min(lPct2 * 3, 5) + Math.Min(lPct3 * 4, 1) + Math.Min(lPct4 * 1/2, 3));
+                        lImportance = Math.Max(lImportance, 1);
                         lImportance = Math.Min(lImportance, 9);
                     }
                 }
