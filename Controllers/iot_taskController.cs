@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using currentweather.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using currentweather.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using Newtonsoft.Json;
+using currentweather.Repository;
 
 namespace currentweather.Controllers
 {
@@ -24,275 +21,106 @@ namespace currentweather.Controllers
     {
         private readonly CurrentWeatherContext _context;
         private readonly IHubContext<ServerUpdateHub> _hubContext;
-        private readonly string _entity;
+        private Iiot_taskRepository _iot_taskRepository;
 
         public iot_taskController(CurrentWeatherContext context, IHubContext<ServerUpdateHub> hubContext)
         {
             _context = context;
             _hubContext = hubContext;
-            _entity = "iot_task";
+            _iot_taskRepository = new iot_taskRepository(_context, _hubContext);
         }
 
         // GET: api/iot_task
         [HttpGet]
         public async Task<ActionResult<IEnumerable<iot_task>>> Getiot_task()
         {
-            return await _context.iot_task.ToListAsync();
+            return await _iot_taskRepository.Getiot_task();
         }
 
         // GET: api/iot_task/5
         [HttpGet("{id}")]
         public async Task<ActionResult<iot_task>> Getiot_task(long id)
         {
-            var iot_task = await _context.iot_task.FindAsync(id);
-
-            if (iot_task == null)
-            {
-                return NotFound();
-            }
-
-            return iot_task;
+            return await _iot_taskRepository.Getiot_task(id);
         }
 
         // GET: api/iot_task/devicecode/DEVICE01
         [HttpGet("devicecode/{code}")]
         public async Task<ActionResult<IEnumerable<iot_task>>> Getiot_task_devicecode(String code)
         {
-            var getstatuses = new string[] { "SCHEDULED", "ACCEPTED" };
-            var tasks = _context.iot_task
-                    .Where(d => d.device.code==code)
-                    .Where(d => !d.completed.HasValue)
-                    .Where(d => getstatuses.Any(s => d.taskstatusnm==s));
-
-             return await tasks.ToListAsync();
+            return await _iot_taskRepository.Getiot_task_devicecode(code);
         }
 
 
         // PUT: api/iot_task/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
         public async Task<IActionResult> Putiot_task(long id, iot_task iot_task)
         {
-            if (id != iot_task.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(iot_task).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!iot_taskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
-
-            return NoContent();
+            return await _iot_taskRepository.Putiot_task(id, iot_task);
         }
 
 
         // PUT: api/iot_task/completed/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("completed/{id}")]
         public async Task<IActionResult> Putiot_task_completed(long id, iot_task iot_task)
         {
-            if (id != iot_task.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(iot_task).State = EntityState.Modified;
-
-            try
-            {
-                if (iot_task.completed.HasValue)
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  completed={1}, " +
-                        "  taskstatusnm='COMPLETED' " +
-                        "  WHERE id={0}",
-                        parameters: new[] { iot_task.id.ToString(), iot_task.completed.ToString() });
-                else                    
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  completed=(SELECT SYSDATETIMEOFFSET() AT TIME ZONE 'UTC'), " +
-                        "  taskstatusnm='COMPLETED' " +
-                        "  WHERE id={0}",
-                        parameters: iot_task.id);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!iot_taskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
-
-            return NoContent();
+            return await _iot_taskRepository.Putiot_task_completed(id, iot_task);
         }
 
         // PUT: api/iot_task/accepted/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("accepted/{id}")]
         public async Task<IActionResult> Putiot_task_accepted(long id, iot_task iot_task)
         {
-            if (id != iot_task.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(iot_task).State = EntityState.Modified;
-
-            try
-            {
-                if (iot_task.accepted.HasValue)
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  accepted={1}, " +
-                        "  taskstatusnm='ACCEPTED' " +
-                        "  WHERE id={0}",
-                        parameters: new[] { iot_task.id.ToString(), iot_task.accepted.ToString() });
-                else
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  accepted=(SELECT SYSDATETIMEOFFSET() AT TIME ZONE 'UTC'), " +
-                        "  taskstatusnm='ACCEPTED' " +
-                        "  WHERE id={0}",
-                        parameters: iot_task.id);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!iot_taskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
-
-            return NoContent();
+            return await _iot_taskRepository.Putiot_task_accepted(id, iot_task);
         }
 
         // PUT: api/iot_task/failed/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("failed/{id}")]
         public async Task<IActionResult> Putiot_task_failed(long id, iot_task iot_task)
         {
-            if (id != iot_task.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(iot_task).State = EntityState.Modified;
-
-            try
-            {
-                if (iot_task.completed.HasValue)
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  completed={1}, " +
-                        "  taskstatusnm='FAILED' " +
-                        "  WHERE id={0}",
-                        parameters: new[] { iot_task.id.ToString(), iot_task.completed.ToString() });
-                else
-                    await _context.Database.ExecuteSqlRawAsync(
-                        "UPDATE iot_task SET " +
-                        "  completed=null, " +
-                        "  taskstatusnm='FAILED' " +
-                        "  WHERE id={0}",
-                        parameters: iot_task.id);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!iot_taskExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.UPDATE, id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
-
-            return NoContent();
+            return await _iot_taskRepository.Putiot_task_failed(id, iot_task);
         }
 
-
-
         // POST: api/iot_task
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<iot_task>> Postiot_task(iot_task iot_task)
         {
-            _context.iot_task.Add(iot_task);
-            await _context.SaveChangesAsync();
+            return await _iot_taskRepository.Postiot_task(iot_task);
+        }
 
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.INSERT, iot_task.id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
+        // POST: api/iot_task/switchon/DEVICE01
+        [HttpPost("switchon/{code}")]
+        public async Task<ActionResult<iot_task>> Postiot_task_switchon(String code)
+        {
+            return await _iot_taskRepository.Postiot_task_command(code, "SWITCH ON");
+        }
 
-            return CreatedAtAction("Getiot_task", new { id = iot_task.id }, iot_task);
+        // POST: api/iot_task/switchoff/DEVICE01
+        [HttpPost("switchoff/{code}")]
+        public async Task<ActionResult<iot_task>> Postiot_task_switchoff(String code)
+        {
+            return await _iot_taskRepository.Postiot_task_command(code, "SWITCH OFF");
+        }
+
+        // POST: api/iot_task/ping/DEVICE01
+        [HttpPost("ping/{code}")]
+        public async Task<ActionResult<iot_task>> Postiot_task_ping(String code)
+        {
+            return await _iot_taskRepository.Postiot_task_command(code, "PING");
+        }
+
+        // POST: api/iot_task/upgradefirmware/DEVICE01
+        [HttpPost("upgradefirmware/{code}")]
+        public async Task<ActionResult<iot_task>> Postiot_task_upgradefirmware(String code)
+        {
+            return await _iot_taskRepository.Postiot_task_command(code, "UPGRADE FIRMWARE");
         }
 
         // DELETE: api/iot_task/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<iot_task>> Deleteiot_task(long id)
         {
-            var iot_task = await _context.iot_task.FindAsync(id);
-            if (iot_task == null)
-            {
-                return NotFound();
-            }
-
-            _context.iot_task.Remove(iot_task);
-            await _context.SaveChangesAsync();
-
-            var lMsg = new ServerUpdateHubMsg(_entity, ServerUpdateHubMsg.TOperation.DELETE, id);
-            var lJson = JsonConvert.SerializeObject(lMsg);
-            await _hubContext.Clients.All.SendAsync(lMsg.entity, lJson);
-
-            return iot_task;
-        }
-
-        private bool iot_taskExists(long id)
-        {
-            return _context.iot_task.Any(e => e.id == id);
+            return await _iot_taskRepository.Deleteiot_task(id);
         }
     }
 }
